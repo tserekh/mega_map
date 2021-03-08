@@ -1,0 +1,1 @@
+/home/tserekh/abc/mysite/main_map/static/js/oper_squares.js

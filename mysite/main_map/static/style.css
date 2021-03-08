@@ -1,0 +1,402 @@
+body {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 14px;
+    color: black;
+    background-color: gray;
+    margin: 20px;
+    padding: 0;
+}
+select
+{
+color: black;
+font-family: arial, helvetica, sans-serif;
+}
+
+p {
+    line-height: 21px;
+}
+
+
+img {
+    border-style: dashed;
+    border-width: 2px;
+    border-color: #ccc;
+}
+
+a {
+    text-decoration: none;
+}
+
+strong {
+    font-style: italic;
+    text-transform: uppercase;
+}
+
+
+
+
+input[type=search]{
+  width:295px;
+
+  }
+  
+
+div[id=map]
+{
+    width: 100%;
+    height: 100%;
+    background-color: Gainsboro;
+}
+
+div[id=bar]
+
+{
+	position: absolute;
+    width: 330px;
+	max-height:90%;
+    top: 50px;
+	left: 10px;
+	padding: 5px;
+	background-color: rgba(255,255,255,1);
+	overflow-y: scroll;
+}
+div[id=sale_point_info]
+
+{
+	z-index: 1;
+    position:absolute;
+    right: 10px;
+	top: 10px;
+	
+}
+div
+{border-radius: 6px;}
+
+div[id=search]
+
+{	
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	padding: 5px;
+	background-color:
+	rgba(255,255,255,1);
+	width: 330px;
+}
+
+div[id=selected_chain_name_container]
+
+{
+	max-width:400px;
+	overflow-x: scroll;
+}
+
+/* .search_address_button { */
+    /* background-color: #4169E1; */
+    /* border: none; */
+    /* color: white; */
+    /* padding: 10px; */
+    /* text-align: center; */
+    /* text-decoration: none; */
+    /* display: inline-block; */
+    /* font-size: 10px; */
+    /* margin: 4px 2px; */
+    /* cursor: pointer; */
+	/* border-radius: 12px; */
+	/* background-image: url(http://th07.deviantart.net/fs70/150/i/2013/012/c/6/rock_01_png___by_alzstock-d5r84up.png); */
+/* } */
+/* width */
+
+::-webkit-scrollbar {
+    width: 5px;
+		 
+}
+
+
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 2px;
+	
+}
+::-webkit-scrollbar-thumb {
+    background: gray; 
+
+}
+
+.abc_logo{
+	
+	border: none;
+	z-index: 1;
+    position:absolute;
+    right: 10px;
+	bottom: 10px;
+	
+    width: 10%;
+}
+
+
+.search_address_button {
+    position: absolute;
+	border: none;
+	
+	left:307px;
+	background-image: url( "/static/map_icons/search.png" );
+    background-size: 24px 24px;
+    height: 24px;  
+    width: 24px;
+	background-color: white;
+	border-radius: 2px;
+
+}
+
+button
+{opacity: 0.7;}
+button:hover
+{opacity: 1;}
+.clean_orgs {
+	border: none;
+
+	background-image: url( "/static/icons/wiping-swipe-for-floors.png" );
+    background-size: 40px ;
+    height: 40px;  
+    width: 40px;
+	background-color: white;
+
+	 right: 0px;
+}
+
+select[id=selected_nat_class] {
+	overflow-y: scroll;
+	width:325px; 
+	height:170px; 
+	font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+	border-radius: 2px;
+}
+select[id=selected_chain_name] {
+	overflow-y: scroll;
+	width:325px; 
+	height:170px; 
+	font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+	border-radius: 2px;
+}
+
+input 
+{font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;}
+
+button[class=curtail_bar] {
+	z-index: 1;
+		border: none;
+    position: absolute;
+	left:309px;
+	top:40px;
+	background: url( "/static/map_icons/angle-pointing-to-top.png" );
+    background-size: 20px 20px;
+    height: 20px;  
+    width: 20px;
+	background-color: white;
+}
+
+
+.back_button {
+	z-index: 1;
+		border: none;
+	position: absolute;
+	left:280px;
+	top:5px;
+	background-image: url( "/static/map_icons/left-arrow.png" );
+    background-size: 20px 20px;
+    height: 20px;  
+    width: 20px;
+	background-color: white;
+}
+
+
+
+
+
+
+   input[type=checkbox] {
+    display:none;
+}
+input[type=checkbox] + label {
+    display:inline-block;
+	border-width:1px;
+    padding: 0 0 0 0px;
+    height: 40px;
+    width: 40px;
+    background-size: 50%;
+	filter: grayscale(100%);
+
+}
+
+input[type=checkbox]:checked + label {
+	filter:none;
+}
+
+input[type=checkbox]:disabled + label {
+
+	filter: grayscale(50%);
+}
+
+
+
+input[type=checkbox][name=homes] + label {
+    background:url("/static/icons/home.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=works] + label {
+    background:url("/static/icons/works.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=edus] + label {
+    background:url("/static/icons/edus.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=metros] + label {
+    background:url("/static/icons/subway.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=pred_squares] + label {
+    background:url("/static/icons/polygon.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=ground_stops] + label {
+    background:url("/static/icons/bus-stop.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=electric_trains] + label {
+    background:url("/static/icons/electric_trains.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=lines] + label {
+    background:url("/static/icons/walker.png") no-repeat;
+    background-size: 100%;
+}
+
+
+input[type=checkbox][name=interaction] + label {
+    background:url("/static/icons/new_sale_point.png") no-repeat;
+    background-size: 100%;
+
+}
+
+input[type=checkbox][name=view] + label {
+    background:url("/static/icons/eye.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=heat_map] + label {
+    background:url("/static/icons/heat_map.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=a] + label {
+    background:url("/static/icons/a.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=b] + label {
+    background:url("/static/icons/b.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=c] + label {
+    background:url("/static/icons/c.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=square_mode] + label {
+    background:url("/static/icons/square_mode.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=sq_male] + label {
+    background:url("/static/icons/sq_male.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=sq_female] + label {
+    background:url("/static/icons/sq_female.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=sq_homes] + label {
+    background:url("/static/icons/sq_homes.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][id=sq_works] + label {
+    background:url("/static/icons/sq_works.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][id=orgs_bar] + label {
+    background:url("/static/icons/a.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=colored_homes] + label {
+    background:url("/static/icons/colored_homes.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][id=two_points] + label {
+    background:url("/static/icons/two_points.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=three_points] + label {
+    background:url("/static/icons/three_points.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=sq_save] + label {
+    background:url("/static/icons/save.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=delete_sale_points] + label {
+    background:url("/static/icons/save.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=show_sale_points] + label {
+    background:url("/static/icons/eye.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=isocrone] + label {
+    background:url("/static/icons/isocrone.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][id=sale_point1] + label {
+    background:url("/static/icons/market_icon.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=sale_point2] + label {
+    background:url("/static/icons/cafe_icon.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][id=point_count] + label {
+    background:url("/static/icons/point_count.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][id=brand_map] + label {
+    background:url("/static/icons/brand_map.png") no-repeat;
+    background-size: 100%;
+}
+
+.ol-control.ol-zoom{
+
+	top: calc(50% - 50px);
+	left: calc(100% - 45px);
+	background: none;
+}
+.ol-control.ol-zoom:hover{
+
+	top: calc(50% - 50px);
+	left: calc(100% - 45px);
+	background: none;
+}
+.ol-control.ol-zoom button{
+	background-color: rgba(0, 40, 40, .7);
+	border-radius: 50%;
+	font-size:24px;
+}
+
+div [class=ol-attribution ol-unselectable ol-control]
+{visibility: hidden;}
