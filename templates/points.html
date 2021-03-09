@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+<html>
+
+<meta charset="UTF-8">
+
+<head>
+    <title>Mega map</title>
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/icons/favicon.png">
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato" />
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
+	<link rel="stylesheet" href="{{ url_for('static',filename='multirange.css') }}">
+	<link rel="stylesheet" href="https://openlayers.org/en/v5.0.3/css/ol.css" type="text/css">
+	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"  type="module"></script>
+
+
+
+	    <title>Clustered Features</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+	
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+	<script src="{{ url_for('static',filename='js/liba.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/orgs.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/pred_squares.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/oper_squares.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/sale_points.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/metros.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/homes.js') }}"></script>
+	<script data-require="jquery@2.0.3" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+
+</head>
+<body>
+	<div id="map" class="map" style="position: absolute; top: 0px; left: 0px;"></div>
+		<div id='search' >
+		 <input type="search" id="searchAddress"
+			   placeholder="Введите адрес"
+			   onsubmit='searchAddress()'>
+		<span>
+			<button  class ='search_address_button' id='search_address_button' onclick="searchAddress()"></button>
+		</span>
+		<div><button class = 'curtail_bar' type="button" id='curtail_bar' onclick="curtail_bar()"></button></div>
+		</div>
+		<div id='bar_container'>
+			<div id='bar' >
+				
+				<div id='select_bar' >
+					<div  align='left'>
+						<!-- <input type="checkbox" name="pred_squares" value="pred_squares" id = "pred_squares" onclick='get_pred_squares(); pred_squares_show_hide()'> -->
+						<!-- <label  id = 'pred_squares_label' for="pred_squares"></label> -->
+						<input type="checkbox" name="square_mode" value="square_mode" id = "square_mode"; onclick='sq();oper_squares_layer.setSource(ol.source.Vector());get_oper_squares()' >
+						<label for="square_mode"></label>						
+						<input type="checkbox" name="homes" value="homes" id = "homes"  onchange='homes_settings_show_hide()'>
+						<label id = 'homes_label' for="homes"></label>
+
+						<input type="checkbox" name="lines" value="lines" id = "lines" >
+						<label id = 'lines_label' for="lines"></label>	
+						<input type="checkbox" name="ground_stops" value="ground_stops" id = "ground_stops" >
+						<label id = 'ground_stops_label' for="ground_stops"></label>
+						<input type="checkbox" name="metros" value="metros" id = "metros">
+						<label id = 'metros_label' for="metros"></label>
+						<input type="checkbox" id = "orgs_bar" onclick="orgs_bar_func()">
+						<label  id = 'orgs_bar_label' for="orgs_bar"></label>
+
+					</div>				
+					  <form align="center">
+							<div id="pred_squares_selecter" align='left' hidden>
+								<div>
+									<input type="checkbox" name="sale_point1" value="sale_point1" id = "sale_point1" checked 
+												onclick='switch_sale_point1();update_pred_square_style();'>
+									<label id = 'sale_point1_label' for="sale_point1"></label>
+									<input type="checkbox" name="sale_point2" value="sale_point2" id = "sale_point2"
+												onclick='switch_sale_point2(); update_pred_square_style();'>
+									<label id = 'sale_point2_label' for="sale_point2"></label>
+
+								</div>
+								<input type="range" id='sale_point_color_range' multiple  min="0" max="2000"  step="1"
+									value='0' style='width:188px' onchange='update_pred_square_style();' > Уровень цвета</input>
+
+							</div>
+							<div id="homes_settings" align='left' hidden>
+								<div>
+
+									<input type="checkbox" name="colored_homes" value="colored_homes" id = "colored_homes" onclick='get_homes();MSH_hide_show()'>
+									<label id = 'colored_homes_label' for="colored_homes"></label>
+									<span id ='metro_shop_home_container' hidden>
+									
+										<input type="checkbox" name="brand_map" value="brand_map" id = "brand_map">
+										<label id = 'brand_map' for="brand_map"></label>
+										
+										<input checked type="checkbox" name="two_points" value="two_points" id = "two_points"  onclick='get_homes();switch_metro_shop_home1()'>
+										<label id = 'two_points' for="two_points"></label>
+										<input type="checkbox" name="three_points" value="three_points" id = "three_points"  onclick='get_homes();switch_metro_shop_home2()'>
+										<label id = 'three_points' for="three_points"></label>
+									</span>
+
+								</div>
+								<input type="range" id='homes_color_range' multiple  min="0" max="5000"  step="1"
+									value='0' style='width:188px'  onclick='get_homes()' > Уровень цвета</input>
+
+							</div>
+
+							<div id="demand-selector" align='left' hidden>
+								<div>
+									<!-- <input type="checkbox" id="sq_save"  onchange='get_oper_squares()'> -->
+									<!-- <label for="sq_save"></label> -->
+									<input type="checkbox" id="sq_homes"  onchange='balance("sq_homes","sq_works");'>
+									<label for="sq_homes"></label>
+									<input type="checkbox" id="sq_works" onchange='balance("sq_homes","sq_works")'>
+									<label for="sq_works"></label>
+									<input type="checkbox" id="sq_male" onchange='balance("sq_male","sq_female")'>
+									<label for="sq_male"></label>
+									<input type="checkbox"  id = "sq_female"  onchange='balance("sq_male","sq_female")'>
+									<label for="sq_female"></label>
+		
+								</div>
+								
+								Аггрегируемый показатель:&nbsp&nbsp     
+
+								<select id='pivot'>
+									<option value="null">Число людей</option>
+									<option value="age">Возраст</option>
+									<option value="male">Пол</option>
+									<option value="income">Доход</option>
+									<option value="if_home">Жители/рабочие</option>
+								</select>
+									<div>
+										<div align='left'><input type="range" id='sq_age' multiple  min="0" max="6"  step="1"
+											  value='0' style='width:188px'> Возраст</input></div>
+										<div align='left'><input type="range" id='sq_income' multiple  min="0" max="3"  step="1"
+											 value='0'  style='width:188px'> Доход</input></div>
+										<div align='left'><input type="range" id='sq_users' multiple min="0" max="1000"  step="1"
+											 value='0'  style='width:188px'> Людей в квадрате</input></div>
+									</div>
+							</div>
+						
+						<div id='selected_orgs' hidden>
+							<input type="checkbox" name="point_count" value="point_count" id = "point_count">
+							<!-- <label id = 'point_count' for="point_count"></label> -->
+							<form id='orgs_select' method="post" onsubmit="" >
+
+								<div class="custom-select">
+
+								  <select id='selected_nat_class' multiple onchange='get_orgs();get_homes()' >
+
+									<option value="Банкомат">Банкомат</option>
+									<option value="Кафе">Кафе</option>
+									<option value="Аптека">Аптека</option>
+									<option value="Супермаркет">Супермаркет</option>
+									<option value="Банк">Банк</option>
+									<option value="Ресторан">Ресторан</option>
+									<option value="Магазин продуктов">Магазин продуктов</option>
+									<option value="Торговый центр">Торговый центр</option>
+									<option value="Бар, паб">Бар, паб</option>
+									<option value="Кофейня">Кофейня</option>
+									<option value="Быстрое питание">Быстрое питание</option>
+
+								  </select>		
+								</div>
+
+								<div>
+									<div id='selected_chain_name_container'>
+										<select id='selected_chain_name' multiple onchange='get_orgs()' style='overflow-y: scroll; width:325px'>
+											
+											<option value="Сбербанк России, банкомат">Сбербанк России, банкомат</option>
+											<option value="Пятёрочка">Пятёрочка</option>
+											<option value="Банк ВТБ, банкомат">Банк ВТБ, банкомат</option>
+											<option value="Магнит">Магнит</option>
+											<option value="Сбербанк России">Сбербанк России</option>
+											<option value="Аптека">Аптека</option>
+											<option value="Кафе">Кафе</option>
+											<option value="Дикси">Дикси</option>
+											<option value="Почта банк">Почта банк</option>
+											<option value="Магазин продуктов">Магазин продуктов</option>
+										</select>
+								</div>
+								</div>
+								
+							</form>
+
+							<div>
+								<input type="checkbox" name="heat_map" value="heat_map" id="heat_map" onclick='get_orgs()'>
+								<label for="heat_map"></label>
+								<span>
+									<span>
+										<label></label>
+										<input id="radius" type="range" min="1" max="20" step="1" value="5" style='width:220px'onchange='update_heat_map_radius()' />
+									</span>
+
+								</span>
+								<span><button  class ='clean_orgs' type="button" onclick="clean_orgs(); get_homes()"></button></span>
+
+							</div>
+						</div>
+				
+				
+
+			</div>
+			<div id='describe_bar' style="display: none;">
+				<div><button class='back_button' type="button" id='back_bar' onclick="back_bar()"></button></div>
+				<div id='describe' style="display: block;"> </div>
+				<div><br /> </div>
+				<!-- <input type="checkbox" name="isocrone" value="isocrone" id="isocrone"> -->
+				<!-- <label for="isocrone"></label> -->
+				
+			</div>
+		</div>
+		
+
+	</div>
+
+</body>
+<script>
+function set_sq_valueHigh(){
+	document.getElementById('sq_age').valueHigh = 6;
+	document.getElementById('sq_income').valueHigh = 3;
+	document.getElementById('sq_users').valueHigh = 1000;
+}
+function MSH_hide_show()
+	{
+	if (document.getElementById('colored_homes').checked)
+		{$(document.getElementById('metro_shop_home_container')).show(200)}
+	else
+		$(document.getElementById('metro_shop_home_container')).hide(200)
+	}
+</script>
+<script>
+document.getElementById("search").addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+	
+        searchAddress();
+    }
+});
+function balance(x,y)
+{	
+	console.log('balance');
+	console.log(console.log(document.getElementById(x).checked));
+	console.log(console.log(document.getElementById(y).checked));
+	if ((document.getElementById(x).checked==false)&(document.getElementById(y).checked==false)){
+		document.getElementById(x).checked=true;
+		document.getElementById(y).checked=true;
+	}
+}
+function update_heat_map_radius(){
+	radius = document.getElementById('radius')
+	heat_map_layer.setRadius( parseInt(radius.value, 10))
+	}
+function update_heat_map_blur(){
+blur = document.getElementById('blur')
+	heat_map_layer.setBlur( parseInt(blur.value, 10))
+	}
+function back_bar(){
+	document.getElementById("select_bar").style.display = "block";
+	document.getElementById("describe_bar").style.display = "none";
+			}
+function curtail_bar(){
+	
+	if (document.getElementById("curtail_bar").style.opacity == 1){
+		$(document.getElementById('bar')).show(200)
+		document.getElementById("curtail_bar").style.backgroundImage = "url('/static/map_icons/angle-pointing-to-top.png')"
+		document.getElementById("curtail_bar").style.opacity = ""
+	}else{
+		$(document.getElementById('bar')).hide(200);
+		document.getElementById("curtail_bar").style.backgroundImage = "url('/static/map_icons/angle-pointing-to-buttom.png')";
+		document.getElementById("curtail_bar").style.opacity = 1;
+	}	
+}
+function homes_settings_show_hide(){
+	if (document.getElementById('homes').checked){
+		$(document.getElementById('homes_settings')).show(200);
+	}else{
+	$(document.getElementById('homes_settings')).hide(200);
+	}
+}
+			
+		
+			
+function searchAddress(){
+	var bbox = "36.498210,55.271105~38.459270,56.141082";
+	var geocode_url_pattern = "https://geocode-maps.yandex.ru/1.x/?format=json&bbox=" + bbox +"&geocode=";
+	var search_address = document.getElementById("searchAddress").value;
+	var geocode_url = geocode_url_pattern + search_address;
+	$.get(geocode_url).then(function(response, geocode_url) {
+		var info_text  = '';
+		var GeoObjectCollection = response['response']['GeoObjectCollection'];
+		console.log(GeoObjectCollection['metaDataProperty']['GeocoderResponseMetaData']['found']);
+		if (GeoObjectCollection['metaDataProperty']['GeocoderResponseMetaData']['found']=="0"){
+			console.log("Ничего не нашлось");
+			info_text = 'Ничего не нашлось';
+		}else{
+			GeoObject = GeoObjectCollection['featureMember'][0]['GeoObject'];
+			info_text = GeoObject['metaDataProperty']['GeocoderMetaData']['Address']['formatted'];
+			coords = GeoObject['Point']['pos'].split(' ');
+			coords = coords.map(parseFloat);
+			console.log(coords);
+			
+			coords = ol.proj.fromLonLat(coords);
+			geom = new ol.geom.Point(coords)
+			view.animate({
+				center: coords,
+				duration: 500,
+				zoom: 15
+			})
+			
+		}
+		
+		document.getElementById("select_bar").style.display = "none";
+		document.getElementById("describe_bar").style.display = "block";
+		document.getElementById("bar").style.display = "block";
+		document.getElementById("describe").innerHTML = info_text;
+		
+			feature = new ol.Feature({
+			'geometry': geom,
+			'info':info_text,
+			radius:10,
+			});
+			feature.setStyle(compute_search_address_style(feature, '#FC00C3'));
+			features = [feature];
+						
+				var source = new ol.source.Vector({
+					features: features,
+					wrapX: false
+				});
+				
+				search_address_layer.setSource(source);
+		
+	})
+}
+      var vector = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+		style:compute_new_point_style,
+      });
+	  
+	  var orgs_layer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+		style:compute_new_point_style,
+      });
+	  
+	  var heat_map_layer = new ol.layer.Heatmap({
+       source: new ol.source.Vector(),
+	   radius:10
+	  });
+	  
+	 var oper_squares_layer = new ol.layer.Vector({
+		source: new ol.source.Vector(),
+		style: compute_oper_square_style
+	  });
+	 var pred_squares_layer = new ol.layer.Vector({
+		source: new ol.source.Vector(),
+		style: compute_pred_square_style
+	  });
+function get_ground_stop_features(data){
+		console.log(data);	
+		console.log(data[0]);	
+		var features = [];
+		for (var i = 0; i < data.length; ++i){
+			point = [data[i]["x"],data[i]["y"]];
+			geom = new ol.geom.Point(point);
+			
+			feature = new ol.Feature(
+				{
+					'geometry': geom,
+					radius:10,'info': 'Нет информации объекте',
+					'n_ground_stops':data[i]["n_ground_stops"],
+					'is_one':data[i]["is_one"]
+					}, );
+			feature.setStyle(compute_ground_stop_style(feature));
+			features.push(feature);
+		}
+		console.log(features);
+		return features	
+	}
+	function get_ground_stop_layer(features, obj_color){
+		var vectorSource = new ol.source.Vector({
+		features: features,
+		wrapX: false
+		  });
+		  
+		  
+		 var vector = new ol.layer.Vector({
+			source: vectorSource,
+		});
+		
+		return vector
+	}
+				<!-- STYLE -->
+function compute_new_point_style(feature) {
+	var fill_color = 'cyan';
+	
+	
+	var style_dic = {}
+		style_dic['image'] =  new ol.style.Circle({
+					radius: 10,
+					fill: new ol.style.Fill({
+						color: fill_color
+					}),
+					stroke: new ol.style.Stroke({
+						color: 'black',
+						width: 0
+					})
+				})
+		style_dic['text'] = new ol.style.Text({
+			font: '12px helvetica,sans-serif',
+			text: feature.get('revenue'),
+			fill: new ol.style.Fill({
+			color: '#000'
+			}),
+			stroke: new ol.style.Stroke({
+				color: '#fff',
+				width: 2
+			})
+		})
+	return new ol.style.Style(style_dic);
+	}
+function compute_ground_stop_style(feature) {
+	var fill_color = '#6D6D6D';
+	
+	
+	var style_dic = {}
+	console.log(feature);
+	if (feature.get('is_one')!=true){
+		style_dic['image'] =  new ol.style.Circle({
+					radius: 7 + feature.get('n_ground_stops').toString().length,
+					fill: new ol.style.Fill({
+						color: fill_color
+					}),
+				})
+		style_dic['text'] = new ol.style.Text({
+			font: '10px helvetica,sans-serif',
+			text: feature.get('n_ground_stops').toString(),
+			fill: new ol.style.Fill({
+			color: 'white'
+			}),
+		})
+	}else{
+		style_dic['image'] = new ol.style.Icon({
+		radius: feature.get('radius'),
+          anchor: [0.5, 0.5],
+          size: [128, 128],
+          offset: [0, 0],
+          opacity: 1,
+          scale: 0.1,
+          src:decodeURIComponent("/static/map_icons/bus-stop.png")
+        })
+		
+		
+		
+	}
+	return new ol.style.Style(style_dic);
+}
+	
+	
+	function compute_search_address_style(feature,fill_color) {
+		var style_dic = {};
+		style_dic['image'] =  new ol.style.Icon({
+			radius: feature.get('radius'),
+          anchor: [0.5, 0.5],
+          size: [200, 200],
+          offset: [0, 0],
+          opacity: 1,
+          scale: 0.2,
+          src:decodeURIComponent("/static/icons/placeholder.png")
+        })
+	return new ol.style.Style(style_dic);
+}
+	
+	
+	function compute_sale_point_style(feature) {
+		fill_color='#3498db';
+		style_dic = {}
+		style_dic['image'] =  new ol.style.Circle({
+				radius: feature.get('radius'),
+				fill: new ol.style.Fill({
+					color: fill_color
+				}),
+			})
+	
+	
+		style_dic['text'] = new ol.style.Text({
+			font: '10px helvetica,sans-serif',
+			text: feature.get('name'),
+			fill: new ol.style.Fill({
+				color: 'white',
+			}),
+		})
+		return new ol.style.Style(style_dic);	
+	}
+	function compute_org_style(feature,fill_color) {
+		have_logos = {{have_logos}};
+		
+		<!-- have_logos.indexOf(feature.get('chain_name')) >= 0) -->
+		var fill_color = 'brown';
+		var style_dic = {}
+		if (feature.get('count')!=1){
+			style_dic['image'] =  new ol.style.Circle({
+						radius: 7 + feature.get('count').toString().length,
+						fill: new ol.style.Fill({
+							color: fill_color
+						}),
+					})
+			style_dic['text'] = new ol.style.Text({
+				font: '10px helvetica,sans-serif',
+				text: feature.get('count').toString(),
+				fill: new ol.style.Fill({
+				color: 'white'
+				}),
+			})
+		}else{
+			chain_name = feature.get('chain_name');
+			
+			if (have_logos[chain_name] != undefined){
+				style_dic['image'] = new ol.style.Icon({
+				radius: feature.get('radius'),
+				  scale: 25/have_logos[chain_name] ,
+	
+				  src:decodeURIComponent('/static/map_icons/' + chain_name + '.png')
+				})
+			}else{
+					style_dic['image'] =  new ol.style.Circle({
+					radius: 6,
+					fill: new ol.style.Fill({
+						color: fill_color
+					}),
+				})
+			}
+		}
+		return new ol.style.Style(style_dic);	
+	}	
+				<!-- GET FEATURES -->
+	
+	var center_coord = [37.622504, 55.753215];
+	center_coord = ol.proj.fromLonLat(center_coord);
+
+
+	
+	var map_layer = new ol.layer.Tile({
+        source: new ol.source.XYZ({
+			url :'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoia3ZlcnRlYSIsImEiOiJja20yaGUyaHQydTltMm9td2hiNHE0ODN0In0.6XgH1RGhtegATqnrQiLsew',
+			attributions: []
+			})
+          })
+
+      var view = new ol.View({
+        center: center_coord,
+        zoom: 11
+      });
+	
+	sale_points_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
+	
+	fresh_sale_points_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
+	search_address_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
+	home_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
+	
+	var map = new ol.Map({
+		layers: [
+					map_layer, vector,heat_map_layer, home_layer, orgs_layer,
+					search_address_layer, fresh_sale_points_layer,
+					sale_points_layer, oper_squares_layer, pred_squares_layer ],
+        target: document.getElementById('map'),
+        view: view
+      });
+	function get_boarders(){
+		var extent = map.getView().calculateExtent(map.getSize());
+		min_coord = ol.proj.transform([extent[0],extent[1]], 'EPSG:3857', 'EPSG:4326');
+		max_coord = ol.proj.transform([extent[2],extent[3]], 'EPSG:3857', 'EPSG:4326');
+		
+		boarders_dic = {};
+		
+		boarders_dic['x_min'] = extent[0];
+		boarders_dic['y_min'] = extent[1];
+		boarders_dic['x_max'] = extent[2];
+		boarders_dic['y_max'] = extent[3];
+		
+		boarders_dic['lon_min'] = min_coord[0];
+		boarders_dic['lat_min'] = min_coord[1];
+		boarders_dic['lon_max'] = max_coord[0];
+		boarders_dic['lat_max'] = max_coord[1];
+		return boarders_dic
+	}
+	
+	
+	function getMultSelectbyId(id_)
+	
+	{
+		var select = document.getElementById(id_);
+		var selected = [];
+		for (var i = 0; i < select.length; i++) {
+			if (select[i].selected) selected.push(select[i].value);
+				}
+		return selected
+	}
+	
+		
+	
+	$('input').change(function(){
+	
+		
+		param_dic = get_boarders();
+		console.log(param_dic);
+		
+		param_dic['nat_class'] = document.getElementById('selected_nat_class').value;
+		
+		value = $(this).val();
+		console.log(value);
+		if (value=='metros'){
+			if (document.getElementById(value).checked){
+			document.getElementById("metros").disabled = true;
+				$.get(metro_url,param_dic).then(function(response) {
+					console.log("Success!");
+					var features = get_metro_features(response['metros']);
+					metro_layer = get_metro_layer(features, 'red');
+					map.addLayer(metro_layer);
+					document.getElementById("metros").disabled = false;
+					
+					console.log('input')
+				})
+			}
+			else{
+				console.log('remove');
+				
+				map.removeLayer(metro_layer);
+			}
+		}
+		if (value=='homes'){
+			get_homes()
+		}
+		
+		
+		if (value=='lines'){
+			<!-- val = document.getElementById('selected_line_type').value; -->
+			<!-- document.getElementById("selected_line_type").disabled = true; -->
+			<!-- param_dic['mode'] = val.split('_')[0]; -->
+			<!-- param_dic['att'] = val.split('_')[1]; -->
+			console.log(param_dic);
+			if (document.getElementById(value).checked){
+				document.getElementById("lines").disabled = true;
+				$.get(line_url,param_dic).then(function(response) {
+					lines = response['lines'];
+					console.log(lines);
+					source = get_lines_source(lines);
+					line_layer = get_line_layer(source);
+					console.log(line_layer);
+					map.addLayer(line_layer);
+					document.getElementById("lines").disabled = false;
+					
+				})
+			}
+			else{
+				console.log('remove');
+				map.removeLayer(line_layer);
+				document.getElementById("selected_line_type").disabled = false;
+				
+			}
+		}			
+		if (value=='ground_stops'){
+			if (document.getElementById(value).checked){
+			document.getElementById("ground_stops").disabled = true;
+				$.get(ground_stop_url,param_dic).then(function(response) {
+					console.log("Success!");
+					var features = get_ground_stop_features(response['ground_stops']);
+					ground_stop_layer = get_ground_stop_layer(features, 'red');
+					map.addLayer(ground_stop_layer);
+					document.getElementById("ground_stops").disabled = false;
+					
+					console.log('input')
+				})
+			}
+			else{
+				console.log('remove');
+				
+				map.removeLayer(ground_stop_layer);
+			}
+		}
+		
+		
+	});
+	map.on('moveend', function() {
+	get_orgs();
+	get_sale_points()
+	if (document.getElementById('square_mode').checked)
+	{get_oper_squares()}
+	<!-- get_pred_squares(); -->
+	fresh_sale_points_layer.setSource(new ol.source.Vector());
+	param_dic = get_boarders();
+	param_dic['delete_all'] = false;
+	param_dic['nat_class'] = document.getElementById('selected_nat_class').value;
+		console.log('move map');
+		if (document.getElementById("metros").checked){
+			
+			$.get(metro_url,param_dic).then(function(response) {
+				var features = get_metro_features(response['metros']);
+			
+				source = new ol.source.Vector({
+					features: features,
+					wrapX: false
+					});
+					
+				metro_layer.setSource(source);
+			});
+		}
+		if (document.getElementById("homes").checked){
+			get_homes()
+		}
+		
+		if (document.getElementById("ground_stops").checked){
+			document.getElementById("ground_stops").disabled = true;
+			$.get(ground_stop_url,param_dic).then(function(response) {
+				var features = get_ground_stop_features(response['ground_stops']);
+				source = new ol.source.Vector({
+					features: features,
+					wrapX: false
+				});
+				
+				ground_stop_layer.setSource(source)
+				document.getElementById("ground_stops").disabled = false;
+			});
+		}
+		if (document.getElementById("lines").checked){
+			document.getElementById("lines").disabled = true;
+			
+			$.get(line_url, param_dic).then(function(response) {
+				console.log(response);
+				var source = get_lines_source(response['lines']);
+				line_layer.setSource(source);
+				document.getElementById("lines").disabled = false;
+			});
+		}
+});
+	
+	
+map.on('click', function(evt){	
+    var feature = map.forEachFeatureAtPixel(evt.pixel,
+        function(feature, layer) {
+			console.log('click event');
+            console.log(feature.get('info'));
+			info = feature.get('info');
+			if (feature.get('info')==undefined){	
+				info = 'Нет информации об объекте';
+			}
+			console.log(feature);
+			document.getElementById("select_bar").style.display = "none";
+			document.getElementById("describe_bar").style.display = "block";
+			document.getElementById("bar").style.display = "block";
+			document.getElementById("describe").innerHTML = info;
+    });
+});
+	
+	function addRevenues(vector){
+		features = vector.getSource().getFeatures();
+		console.log(features);
+		var revenue_;
+		lonlatOnMap = [];
+		for (var i = 0; i < features.length; ++i){
+			geometry = features[i].getGeometry();
+			
+			if (geometry.getType() == 'Point'){
+				lonlat3857= geometry['A'];
+				lonlat = ol.proj.transform(lonlat3857, 'EPSG:3857', 'EPSG:4326');
+				coord_dic = {};
+				coord_dic['lon'] = lonlat[0];
+				coord_dic['lat'] = lonlat[1];
+				lonlat = ol.proj.fromLonLat(lonlat);
+				 
+				a = Math.round(lonlat[0]).toString().slice(-3,)
+				b = Math.round(lonlat[1]).toString().slice(-3,);
+				revenue_ = 2*a*b+1200000
+				revenue_ = parseFloat(revenue_);
+				features[i]['N']['info']  = "Прогноз выручки " + revenue_;
+				features[i]['N']['revenue']  = (Math.round(revenue_/10000)/100).toString()+'M';
+	
+			}
+		}
+	}
+document.getElementsByClassName("ol-attribution")[0].style.display='none'
+    </script>
+</html>
