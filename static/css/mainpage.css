@@ -1,0 +1,255 @@
+body {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 14px;
+    color: black;
+    background-color: gray;
+    margin: 20px;
+    padding: 0;
+}
+
+
+p {
+    line-height: 21px;
+}
+
+
+img {
+    border-style: dashed;
+    border-width: 2px;
+    border-color: #ccc;
+}
+
+a {
+    text-decoration: none;
+}
+
+strong {
+    font-style: italic;
+    text-transform: uppercase;
+}
+
+
+
+
+
+
+input[type=search]{
+  font-size: 15px;
+  width:295px;
+
+  }
+
+select {
+  font-size: 15px;
+  color: black;
+
+}
+select:disabled {
+  font-size: 15px;
+  color: gray;
+
+
+}
+div[id=map]
+{
+    width: 100%;
+    height: 100%;
+    background-color: Gainsboro;
+}
+
+div[id=bar]
+
+{
+	position: absolute;
+    width: 330px;
+	max-height:80%;
+    top: 50px;
+	left: 10px;
+	padding: 5px;
+	background-color: rgba(255,255,255,1);
+	overflow-y: scroll;
+}
+
+div
+{border-radius: 2px;}
+
+div[id=search]
+
+{
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	padding: 5px;
+	background-color:
+	rgba(255,255,255,1);
+	width: 330px;
+}
+
+div[id=selected_chain_name_container]
+
+{
+	max-width:400px;
+	overflow-x: scroll;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 0px;
+}
+::-webkit-scrollbar-thumb {
+    background: gray;
+}
+.search_address_button {
+    position: absolute;
+	border: none;
+
+	left:307px;
+	background-image: url( "/static/map_icons/search.png" );
+    background-size: 24px 24px;
+    height: 24px;
+    width: 24px;
+	background-color: white;
+	border-radius: 8px;
+}
+
+.curtail_bar {
+	z-index: 1;
+		border: none;
+    position: absolute;
+	left:309px;
+	top:40px;
+	background-image: url( "/static/map_icons/angle-pointing-to-top.png" );
+    background-size: 20px 20px;
+    height: 20px;
+    width: 20px;
+	background-color: white;
+}
+
+.back_button {
+	z-index: 1;
+		border: none;
+	position: absolute;
+	left:280px;
+	top:5px;
+	background-image: url( "/static/map_icons/left-arrow.png" );
+    background-size: 20px 20px;
+    height: 20px;
+    width: 20px;
+	background-color: white;
+}
+
+
+
+
+
+.cc-selector input{
+    margin:0;padding:0;
+    -webkit-appearance:none;
+       -moz-appearance:none;
+            appearance:none;
+}
+
+.cc-selector-2 input{
+    position:absolute;
+    z-index:999;
+}
+
+.nothing{background-image:url(/static/map_icons/cursor.png);}
+.draw{background-image:url(/static/map_icons/create-new-pencil-button.png);}
+.move{background-image:url(/static/map_icons/four-expand-arrows.png);}
+
+.cc-selector-2 input:active +.drinkcard-cc, .cc-selector input:active +.drinkcard-cc{opacity: .9;}
+.cc-selector-2 input:checked +.drinkcard-cc, .cc-selector input:checked +.drinkcard-cc{
+    -webkit-filter: none;
+       -moz-filter: none;
+            filter: none;
+}
+.drinkcard-cc{
+    cursor:pointer;
+    background-size:contain;
+    background-repeat:no-repeat;
+    display:inline-block;
+    width:40px;height:40px;
+    -webkit-transition: all 100ms ease-in;
+       -moz-transition: all 100ms ease-in;
+            transition: all 100ms ease-in;
+
+            filter: brightness(1.8) grayscale(1) opacity(.7);
+}
+.drinkcard-cc:hover{
+
+            filter: brightness(1.2) grayscale(.5) opacity(.9);
+}
+
+
+   input[type=checkbox] {
+    display:none;
+}
+
+input[type=checkbox] + label {
+    display:inline-block;
+    padding: 0 0 0 0px;
+    height: 40px;
+    width: 40px;
+    background-size: 50%;
+	filter: grayscale(100%);
+}
+
+input[type=checkbox]:checked + label {
+	filter:none;
+}
+
+input[type=checkbox]:disabled + label {
+
+	filter:filter: grayscale(50%);
+}
+
+
+
+input[type=checkbox][name=homes] + label {
+
+    background:url("/static/icons/home.png") no-repeat;
+    background-size: 100%;
+}
+input[type=checkbox][name=metros] + label {
+
+    background:url("/static/map_icons/metro-moskva-logo.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=polygons] + label {
+
+    background:url("/static/icons/polygon.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=ground_stops] + label {
+
+    background:url("/static/icons/frontal-bus-silhouette.png") no-repeat;
+    background-size: 100%;
+}
+
+input[type=checkbox][name=lines] + label {
+
+    background:url("/static/icons/walker.png") no-repeat;
+    background-size: 100%;
+}
+
+.ol-control.ol-zoom{
+
+	top: calc(50% - 50px);
+	left: calc(100% - 40px);
+	<!-- background-color: red; -->
+	<!-- color: #FF0000; -->
+
+}
+
+.ol-control.ol-zoom button{
+	background-color: rgba(0, 40, 40, .7);
+	border-radius: 50%;
+	font-size:24px;
+}
