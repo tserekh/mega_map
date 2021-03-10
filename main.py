@@ -24,7 +24,7 @@ def get_metros():
     filt = (df['lat'] > lat_min) & (df['lat'] < lat_max) & (df['lon'] > lon_min) & (df['lon'] < lon_max)
     df = df[filt]
     result = list(df.T.to_dict().values())
-    return json.loads(json.dumps({'metros': result}))
+    return {'metros': result}
 
 @app.route('/get_orgs', methods=['GET'])
 def get_orgs():
