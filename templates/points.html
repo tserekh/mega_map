@@ -13,16 +13,16 @@
 	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato" />
 	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
 	<link rel="stylesheet" href="{{ url_for('static',filename='multirange.css') }}">
-	<link rel="stylesheet" href="https://openlayers.org/en/v5.0.3/css/ol.css" type="text/css">
 	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"  type="module"></script>
 
 
 
 	    <title>Clustered Features</title>
-    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
-	
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
-    <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/mainpage.css') }}">
+	<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+
+
 	<script src="{{ url_for('static',filename='js/liba.js') }}"></script>
 	<script src="{{ url_for('static',filename='js/orgs.js') }}"></script>
 	<script src="{{ url_for('static',filename='js/pred_squares.js') }}"></script>
@@ -283,10 +283,10 @@ function homes_settings_show_hide(){
 			
 function searchAddress(){
 	var bbox = "36.498210,55.271105~38.459270,56.141082";
-	var geocode_url_pattern = "https://geocode-maps.yandex.ru/1.x/?format=json&bbox=" + bbox +"&geocode=";
+	var geocode_url_pattern = "https://geocode-maps.yandex.ru/1.x/?format=json&apikey=48c10c45-c431-4e27-9bd7-3ff2563f5bb9&box=" + bbox +"&geocode=";
 	var search_address = document.getElementById("searchAddress").value;
 	var geocode_url = geocode_url_pattern + search_address;
-	$.get(geocode_url).then(function(response, geocode_url) {
+	$.get(geocode_url).then(function(response) {
 		var info_text  = '';
 		var GeoObjectCollection = response['response']['GeoObjectCollection'];
 		console.log(GeoObjectCollection['metaDataProperty']['GeocoderResponseMetaData']['found']);
@@ -469,7 +469,7 @@ function compute_ground_stop_style(feature) {
         })
 	return new ol.style.Style(style_dic);
 }
-	
+
 	
 	function compute_sale_point_style(feature) {
 		fill_color='#3498db';
@@ -537,15 +537,12 @@ function compute_ground_stop_style(feature) {
 	var center_coord = [37.622504, 55.753215];
 	center_coord = ol.proj.fromLonLat(center_coord);
 
-
+	metro_url = "{{ url_for('get_metros') }}"
+	org_url = "{{ url_for('get_orgs') }}"
 	
 	var map_layer = new ol.layer.Tile({
-        source: new ol.source.XYZ({
-			url :'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoia3ZlcnRlYSIsImEiOiJja20yaGUyaHQydTltMm9td2hiNHE0ODN0In0.6XgH1RGhtegATqnrQiLsew',
-			attributions: []
-			})
+            source: new ol.source.OSM()
           })
-
       var view = new ol.View({
         center: center_coord,
         zoom: 11

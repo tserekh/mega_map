@@ -206,19 +206,17 @@ function get_line_layer(line_source){
 	  
 	  
 	function get_metro_features(data){
-
-			data = JSON.parse(data);
-			console.log(data);	
+			console.log(data);
 			var features = [];
 			for (var i = 0; i < data.length; ++i){
-				point = [data[i]['fields']["lon"],data[i]['fields']["lat"]];
+				point = [data[i]["lon"],data[i]["lat"]];
 				point = ol.proj.fromLonLat(point);
 				geom = new ol.geom.Point(point);
-				console.log(data[i]['fields']);
-				if (data[i]['fields']["exit_name"]!=undefined){
-					info = data[i]['fields']["exit_name"];
+				console.log(data[i]);
+				if (data[i]["exit_name"]!=undefined){
+					info = data[i]["exit_name"];
 				}else{
-					info = data[i]['fields']["station_name"];
+					info = data[i]["station_name"];
 					
 				}
 				
