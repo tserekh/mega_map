@@ -74,7 +74,7 @@ def get_homes():
     print(df.head())
     df_clusters = get_clusters(df, n_clusters, agg, 'stupid')
     context = {
-        'homes': list(df_clusters.T.to_dict().values()),
+        'orgs': list(df_clusters.T.to_dict().values()),
     }
     return context
 
