@@ -1,3 +1,14 @@
+import 'ol';
+import CircleStyle from 'ol/style/Circle';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
+import VectorSource from 'ol/source/Vector';
+import Style from 'ol/style/Style';
+import Map from 'ol/Map';
+import OSM from 'ol/source/OSM';
+import TileLayer from 'ol/layer/Tile';
+import View from 'ol/View';
+
 document.getElementById("search").addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode === 13) {
@@ -52,21 +63,21 @@ function homes_settings_show_hide(){
 		style:compute_new_point_style,
       });
 
-	  var orgs_layer = new ol.layer.Vector({
+	  let orgs_layer = new ol.layer.Vector({
         source: new ol.source.Vector(),
 		style:compute_new_point_style,
       });
 
-	  var heat_map_layer = new ol.layer.Heatmap({
+	  let heat_map_layer = new ol.layer.Heatmap({
        source: new ol.source.Vector(),
 	   radius:10
 	  });
 
-	 var oper_squares_layer = new ol.layer.Vector({
+	 let oper_squares_layer = new ol.layer.Vector({
 		source: new ol.source.Vector(),
 		style: compute_oper_square_style
 	  });
-	 var pred_squares_layer = new ol.layer.Vector({
+	 let pred_squares_layer = new ol.layer.Vector({
 		source: new ol.source.Vector(),
 		style: compute_pred_square_style
 	  });
@@ -110,12 +121,12 @@ function compute_new_point_style(feature) {
 
 
 	var style_dic = {}
-		style_dic['image'] =  new ol.style.Circle({
+		style_dic['image'] =  new CircleStyle({
 					radius: 10,
-					fill: new ol.style.Fill({
+					fill: new Fill({
 						color: fill_color
 					}),
-					stroke: new ol.style.Stroke({
+					stroke: new Stroke({
 						color: 'black',
 						width: 0
 					})
@@ -126,7 +137,7 @@ function compute_new_point_style(feature) {
 			fill: new ol.style.Fill({
 			color: '#000'
 			}),
-			stroke: new ol.style.Stroke({
+			stroke: new Stroke({
 				color: '#fff',
 				width: 2
 			})
