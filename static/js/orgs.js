@@ -104,7 +104,7 @@ function get_org_features(data){
 		point = [data[i]["x"],data[i]["y"]];
 		geom = new ol.geom.Point(point);
 		flat_num = data[i]["flat_num"];
-		if (flat_num==undefined)
+		if (flat_num===undefined)
 		{flat_num=''}
 		else{
 			flat_num = '\nЧисло клиентов ' + flat_num

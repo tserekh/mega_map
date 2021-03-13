@@ -4,3 +4,5 @@ flask_script
 flask_migrate
 pyproj
 django
+sklearn
+psycopg2-binary
