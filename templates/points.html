@@ -23,11 +23,8 @@
     <script src="{{ url_for('static',filename='js/metros.js') }}"></script>
     <script src="{{ url_for('static',filename='js/homes.js') }}"></script>
     <script src="{{ url_for('static',filename='js/search.js') }}"></script>
-    <script type="module" src="{{ url_for('static',filename='js/mega_script.js') }}"></script>
-    <script type="module" src="{{ url_for('static',filename='js/map_on.js') }}"></script>
     <script data-require="jquery@2.0.3" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 </head>
@@ -51,8 +48,6 @@
             <div align='left'>
                 <input type="checkbox" name="homes" value="homes" id="homes" onchange='homes_settings_show_hide()'>
                 <label id='homes_label' for="homes"></label>
-                <input type="checkbox" name="lines" value="lines" id="lines">
-                <label id='lines_label' for="lines"></label>
                 <input type="checkbox" name="ground_stops" value="ground_stops" id="ground_stops">
                 <label id='ground_stops_label' for="ground_stops"></label>
                 <input type="checkbox" name="metros" value="metros" id="metros">
@@ -60,31 +55,6 @@
 
             </div>
             <form align="center">
-                <div id="pred_squares_selecter" align='left' hidden>
-                    <div>
-                        <input type="checkbox" name="sale_point1" value="sale_point1" id="sale_point1" checked
-                               onclick='switch_sale_point1();update_pred_square_style();'>
-                        <label id='sale_point1_label' for="sale_point1"></label>
-                        <input type="checkbox" name="sale_point2" value="sale_point2" id="sale_point2"
-                               onclick='switch_sale_point2(); update_pred_square_style();'>
-                        <label id='sale_point2_label' for="sale_point2"></label>
-
-                    </div>
-                    <input type="range" id='sale_point_color_range' multiple min="0" max="2000" step="1"
-                           value='0' style='width:188px' onchange='update_pred_square_style();'> Уровень цвета</input>
-
-                </div>
-                <div id="homes_settings" align='left' hidden>
-                    <div>
-
-                        <input type="checkbox" name="colored_homes" value="colored_homes" id="colored_homes"
-                               onclick='get_homes();MSH_hide_show()'>
-                        <label id='colored_homes_label' for="colored_homes"></label>
-
-                    </div>
-                    <input type="range" id='homes_color_range' multiple min="0" max="5000" step="1"
-                           value='0' style='width:188px' onclick='get_homes()'> Уровень цвета</input>
-                </div>
 
                 <div id='selected_orgs' hidden>
                     <input type="checkbox" name="point_count" value="point_count" id="point_count">
@@ -126,20 +96,6 @@
                         </div>
 
                     </form>
-
-                    <div>
-                        <input type="checkbox" name="heat_map" value="heat_map" id="heat_map" onclick='get_orgs()'>
-                        <label for="heat_map"></label>
-                        <span>
-									<span>
-										<label></label>
-										<input id="radius" type="range" min="1" max="20" step="1" value="5"
-                                               style='width:220px' onchange='update_heat_map_radius()'/>
-									</span>
-								</span>
-                        <span><button class='clean_orgs' type="button"
-                                      onclick="clean_orgs(); get_homes()"></button></span>
-                    </div>
                 </div>
 
 
@@ -156,82 +112,20 @@
 
 
 </div>
-have_logos = {{have_logos}};
 
-metro_url = "{{ url_for('get_metros') }}"
-org_url = "{{ url_for('get_orgs') }}"
-ground_stop_url = "{{ url_for('get_ground_stops') }}"
-home_url = "{{ url_for('get_homes') }}"
+
+
 </body>
 <script>
-    map.on('moveend', function() {
-	get_orgs();
-	get_sale_points()
-	if (document.getElementById('square_mode').checked)
-	{get_oper_squares()}
-	fresh_sale_points_layer.setSource(new ol.source.Vector());
-	param_dic = get_boarders();
-	param_dic['delete_all'] = false;
-	param_dic['nat_class'] = document.getElementById('selected_nat_class').value;
-		console.log('move map');
-		if (document.getElementById("metros").checked){
-			$.get(metro_url,param_dic).then(function(response) {
-				var features = get_metro_features(response['metros']);
-				source = new ol.source.Vector({
-					features: features,
-					wrapX: false
-					});
-				metro_layer.setSource(source);
-			});
-		}
-		if (document.getElementById("homes").checked){
-			get_homes()
-		}
-
-		if (document.getElementById("ground_stops").checked){
-			document.getElementById("ground_stops").disabled = true;
-			$.get(ground_stop_url,param_dic).then(function(response) {
-				var features = get_ground_stop_features(response['ground_stops']);
-				source = new ol.source.Vector({
-					features: features,
-					wrapX: false
-				});
-
-				ground_stop_layer.setSource(source)
-				document.getElementById("ground_stops").disabled = false;
-			});
-		}
-		if (document.getElementById("lines").checked){
-			document.getElementById("lines").disabled = true;
-
-			$.get(line_url, param_dic).then(function(response) {
-				console.log(response);
-				var source = get_lines_source(response['lines']);
-				line_layer.setSource(source);
-				document.getElementById("lines").disabled = false;
-			});
-		}
-});
-
-map.on('click', function(evt){
-    var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature, layer) {
-			console.log('click event');
-            console.log(feature.get('info'));
-			info = feature.get('info');
-			if (feature.get('info')==undefined){
-				info = 'Нет информации об объекте';
-			}
-			console.log(feature);
-			document.getElementById("select_bar").style.display = "none";
-			document.getElementById("describe_bar").style.display = "block";
-			document.getElementById("bar").style.display = "block";
-			document.getElementById("describe").innerHTML = info;
-    });
-});
-</script>
-
-<script>document.getElementById("search").addEventListener("keyup", function(event) {
+    have_logos = {{have_logos}};
+    metro_url = "{{ url_for('get_metros') }}"
+    org_url = "{{ url_for('get_orgs') }}"
+    ground_stop_url = "{{ url_for('get_ground_stops') }}"
+    home_url = "{{ url_for('get_homes') }}"
+    org_url = "get_orgs"
+    metro_url = "get_metros"
+    home_url = "get_homes"
+    document.getElementById("search").addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode === 13) {
 
@@ -349,6 +243,10 @@ function searchAddress(){
 	  });
 
 	 var oper_squares_layer = new ol.layer.Vector({
+		source: new ol.source.Vector(),
+		style: compute_oper_square_style
+	  });
+    var ground_stop_layer  = new ol.layer.Vector({
 		source: new ol.source.Vector(),
 		style: compute_oper_square_style
 	  });
@@ -533,38 +431,36 @@ function compute_ground_stop_style(feature) {
 	var center_coord = [37.622504, 55.753215];
 	center_coord = ol.proj.fromLonLat(center_coord);
 
-
-
 	let map_layer = new ol.layer.Tile({
             source: new ol.source.OSM()
           })
-
 
       var view = new ol.View({
         center: center_coord,
         zoom: 11
       });
 
-	// sale_points_layer = new ol.layer.Vector({
-	// 	source:new ol.source.Vector()
-	// });
+	sale_points_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
 
-	// fresh_sale_points_layer = new ol.layer.Vector({
-	// 	source:new ol.source.Vector()
-	// });
-	// search_address_layer = new ol.layer.Vector({
-	// 	source:new ol.source.Vector()
-	// });
-	// home_layer = new ol.layer.Vector({
-	// 	source:new ol.source.Vector()
-	// });
+	fresh_sale_points_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
+	search_address_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
+	home_layer = new ol.layer.Vector({
+		source:new ol.source.Vector()
+	});
 
 	var map = new ol.Map({
 		layers: [
-					map_layer
-			// , vector,heat_map_layer, home_layer, orgs_layer,
-			// 		search_address_layer, fresh_sale_points_layer,
-			// 		sale_points_layer, oper_squares_layer, pred_squares_layer
+					map_layer,
+                    // home_layer,
+                    // orgs_layer,
+					search_address_layer,
+                    ground_stop_layer
 		],
         target: document.getElementById('map'),
         view: view
@@ -575,7 +471,6 @@ function compute_ground_stop_style(feature) {
 		max_coord = ol.proj.transform([extent[2],extent[3]], 'EPSG:3857', 'EPSG:4326');
 
 		boarders_dic = {};
-
 		boarders_dic['x_min'] = extent[0];
 		boarders_dic['y_min'] = extent[1];
 		boarders_dic['x_max'] = extent[2];
@@ -603,13 +498,9 @@ function compute_ground_stop_style(feature) {
 
 
 	$('input').change(function(){
-
-
-		param_dic = get_boarders();
+        param_dic = get_boarders();
 		console.log(param_dic);
-
 		param_dic['nat_class'] = document.getElementById('selected_nat_class').value;
-
 		value = $(this).val();
 		console.log(value);
 		if (value=='metros'){
@@ -621,21 +512,35 @@ function compute_ground_stop_style(feature) {
 					metro_layer = get_metro_layer(features, 'red');
 					map.addLayer(metro_layer);
 					document.getElementById("metros").disabled = false;
-
 					console.log('input')
 				})
 			}
 			else{
 				console.log('remove');
-
 				map.removeLayer(metro_layer);
 			}
 		}
-		if (value=='homes'){
-			get_homes()
-		}
+		if (value=='homes') {
+            if (document.getElementById("homes").checked) {
+                document.getElementById("homes").disabled = true;
+                $.get(home_url, param_dic).then(function (response) {
+                    console.log("Success!");
+                    var features = get_home_features(response['homes']);
+                    var source = new ol.source.Vector({
+                        features: features,
+                        wrapX: false
+                    });
+                    home_layer.setSource(source);
+                    map.addLayer(home_layer);
+                    document.getElementById("homes").disabled = false;
+                    console.log('input')
+                })
 
+            } else {
+                map.removeLayer(home_layer);
 
+            }
+        }
 		if (value=='lines'){
 			console.log(param_dic);
 			if (document.getElementById(value).checked){
@@ -661,13 +566,12 @@ function compute_ground_stop_style(feature) {
 		if (value=='ground_stops'){
 			if (document.getElementById(value).checked){
 			document.getElementById("ground_stops").disabled = true;
-				$.get(ground_stop_url,param_dic).then(function(response) {
-					console.log("Success!");
+				$.get(ground_stop_url, param_dic).then(function(response) {
+					console.log("Success ground_stops");
 					var features = get_ground_stop_features(response['ground_stops']);
 					ground_stop_layer = get_ground_stop_layer(features, 'red');
 					map.addLayer(ground_stop_layer);
 					document.getElementById("ground_stops").disabled = false;
-
 					console.log('input')
 				})
 			}
@@ -708,7 +612,58 @@ function compute_ground_stop_style(feature) {
 		}
 	}
 document.getElementsByClassName("ol-attribution")[0].style.display='none'
+    map.on('moveend', function() {
+	// get_orgs();
+	get_sale_points()
+	param_dic = get_boarders();
+	param_dic['delete_all'] = false;
+	param_dic['nat_class'] = document.getElementById('selected_nat_class').value;
+		console.log('move map');
+		if (document.getElementById("metros").checked){
+			$.get(metro_url,param_dic).then(function(response) {
+				var features = get_metro_features(response['metros']);
+				source = new ol.source.Vector({
+					features: features,
+					wrapX: false
+					});
+				metro_layer.setSource(source);
+			});
+		}
+		if (document.getElementById("homes").checked){
+			get_homes()
+		}
 
+		if (document.getElementById("ground_stops").checked){
+			document.getElementById("ground_stops").disabled = true;
+			$.get(ground_stop_url,param_dic).then(function(response) {
+				var features = get_ground_stop_features(response['ground_stops']);
+				source = new ol.source.Vector({
+					features: features,
+					wrapX: false
+				});
+
+				ground_stop_layer.setSource(source)
+				document.getElementById("ground_stops").disabled = false;
+			});
+		}
+});
+
+map.on('click', function(evt){
+    var feature = map.forEachFeatureAtPixel(evt.pixel,
+        function(feature, layer) {
+			console.log('click event');
+            console.log(feature.get('info'));
+			info = feature.get('info');
+			if (feature.get('info')==undefined){
+				info = 'Нет информации об объекте';
+			}
+			console.log(feature);
+			document.getElementById("select_bar").style.display = "none";
+			document.getElementById("describe_bar").style.display = "block";
+			document.getElementById("bar").style.display = "block";
+			document.getElementById("describe").innerHTML = info;
+    });
+});
 </script>
 
 </html>

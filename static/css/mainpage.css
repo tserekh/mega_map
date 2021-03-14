@@ -28,11 +28,6 @@ strong {
     text-transform: uppercase;
 }
 
-
-
-
-
-
 input[type=search]{
   font-size: 15px;
   width:295px;
@@ -242,7 +237,7 @@ input[type=checkbox][name=lines] + label {
 .ol-control.ol-zoom{
 
 	top: calc(50% - 50px);
-	left: calc(100% - 40px);
+	left: calc(0% + 40px);
 	<!-- background-color: red; -->
 	<!-- color: #FF0000; -->
 
@@ -253,3 +248,11 @@ input[type=checkbox][name=lines] + label {
 	border-radius: 50%;
 	font-size:24px;
 }
+ .ol-zoom-in
+   {visibility: hidden;}
+  .ol-zoom-out
+   {visibility: hidden;}
+  .ol-rotate
+     {visibility: hidden;}
+  .ol-hidden
+     {visibility: hidden;}
