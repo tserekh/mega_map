@@ -520,27 +520,7 @@ function compute_ground_stop_style(feature) {
 				map.removeLayer(metro_layer);
 			}
 		}
-		if (value=='homes') {
-            if (document.getElementById("homes").checked) {
-                document.getElementById("homes").disabled = true;
-                $.get(home_url, param_dic).then(function (response) {
-                    console.log("Success!");
-                    var features = get_home_features(response['homes']);
-                    var source = new ol.source.Vector({
-                        features: features,
-                        wrapX: false
-                    });
-                    home_layer.setSource(source);
-                    map.addLayer(home_layer);
-                    document.getElementById("homes").disabled = false;
-                    console.log('input')
-                })
-
-            } else {
-                map.removeLayer(home_layer);
-
-            }
-        }
+		if (value=='homes') {get_homes(); document.getElementById("homes").disabled = false;}
 		if (value=='lines'){
 			console.log(param_dic);
 			if (document.getElementById(value).checked){
@@ -611,6 +591,29 @@ function compute_ground_stop_style(feature) {
 			}
 		}
 	}
+	function get_homes()
+        {
+            if (document.getElementById("homes").checked) {
+            document.getElementById("homes").disabled = true;
+            $.get(home_url, param_dic).then(function (response) {
+            console.log("Success!");
+            var features = get_home_features(response['homes']);
+            var source = new ol.source.Vector({
+                                                  features: features,
+                                                  wrapX: false
+                                              });
+            home_layer.setSource(source);
+            map.addLayer(home_layer);
+            document.getElementById("homes").disabled = false;
+            console.log('input')
+        }
+
+    )
+    } else
+    {
+        map.removeLayer(home_layer);
+    }
+}
 document.getElementsByClassName("ol-attribution")[0].style.display='none'
     map.on('moveend', function() {
 	// get_orgs();
@@ -630,7 +633,7 @@ document.getElementsByClassName("ol-attribution")[0].style.display='none'
 			});
 		}
 		if (document.getElementById("homes").checked){
-			get_homes()
+			get_homes(); document.getElementById("homes").disabled = false;
 		}
 
 		if (document.getElementById("ground_stops").checked){
