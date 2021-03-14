@@ -1,0 +1,9 @@
+{
+    "name": "mega_map",
+    "version": "1.0.0",
+    "dependencies": {
+        "jquery": "3.3.1",
+        "bootstrap": "4.2.1",
+        "ol": "6.5.0"
+    }
+}
