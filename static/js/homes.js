@@ -1,30 +1,28 @@
-function get_homes(){
-		if (document.getElementById("homes").checked){
-			
-				param_dic = get_boarders();
-
-				document.getElementById("homes").disabled = true;
-				param_dic['nat_classes'] = getMultSelectbyId('selected_nat_class').join('_');
-				$.get(home_url,param_dic).then(function(response) {
-					console.log("Success!");
-					var features = get_home_features(response['homes']);
-					var source = new ol.source.Vector({
-						features: features,
-						wrapX: false
-					});
-					home_layer.setSource(source);
-					
-
-					document.getElementById("homes").disabled = false;
-					console.log('input')
-				})
-			
-		}
-		else{
-			home_layer.setSource(ol.source.Vector());
-
-		}
-}
+// function get_homes(){
+// 		if (document.getElementById("homes").checked){
+//
+// 				param_dic = get_boarders();
+//
+// 				document.getElementById("homes").disabled = true;
+// 				param_dic['nat_classes'] = getMultSelectbyId('selected_nat_class').join('_');
+// 				$.get(home_url,param_dic).then(function(response) {
+// 					console.log("Success!");
+// 					var features = get_home_features(response['homes']);
+// 					var source = new ol.source.Vector({
+// 						features: features,
+// 						wrapX: false
+// 					});
+// 					home_layer.setSource(source);
+// 					document.getElementById("homes").disabled = false;
+// 					console.log('input')
+// 				})
+//
+// 		}
+// 		else{
+// 			home_layer.setSource(ol.source.Vector());
+//
+// 		}
+// }
 	function get_home_features(data){
 		console.log('inside get_home_features');
 		console.log(data);
@@ -40,19 +38,14 @@ function get_homes(){
 			min_distance = data[i]["min_distance"];
 			min_distance_metro = data[i]["min_distance_metro"];
 			chain_name = data[i]["chain_name"];
-			if ((min_distance!=undefined)&(min_distance!=-1)){
-				min_distance_info = '<br />Расстояние до ближайшего объекта ' + Math.round(min_distance)
-				min_distance_info += '<br/>Доп. расстояние для захода к конкуренту ' +  + Math.round(min_distance_metro);
-			}else{
-				min_distance_info = '';
-			}
+
 			
 			
 			
 			feature = new ol.Feature({
 					'geometry': geom,
 					radius:10,
-					'info': 'Жителей: ' + flat_num + '<br />' + min_distance_info + '<br/>' + chain_name,
+					'info': 'Жителей: ' + flat_num + '<br/>' + chain_name,
 					'chain_name': chain_name,
 					'name': nFormatter(flat_num),
 					'min_distance':parseFloat(min_distance),
@@ -63,37 +56,10 @@ function get_homes(){
 		}
 		return features
 	}
-	function get_home_layer(features, obj_color){
-	
-		var vectorSource = new ol.source.Vector({
-		features: features,
-		wrapX: false
-		  });
-		  
-		 var vector = new ol.layer.Vector({
-			source: vectorSource,
-
-		});
-		
-		return vector
-	}
 	function compute_home_style(feature) {
 
 		chain_name=''
-		
 		min_distance = feature.get('min_distance')
-		
-			
-
-			// low = document.getElementById('homes_color_range').valueLow;
-			// high = document.getElementById('homes_color_range').valueHigh;
-			// perc = (min_distance)/(high-low);
-			
-			// var fill_color = perc2rg(1-perc)
-				// stroke = new ol.style.Stroke({
-					// color: 'black',
-					// width: 2
-				// })
 			var fill_color = 'green';
 			stroke = null;
 
@@ -103,9 +69,7 @@ function get_homes(){
 				fill: new ol.style.Fill({
 					color: fill_color
 				}),
-
 			})
-	
 	
 		style_dic['text'] = new ol.style.Text({
 			font: '10px helvetica,sans-serif',

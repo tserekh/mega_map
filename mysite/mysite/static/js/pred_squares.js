@@ -1,1 +1,0 @@
-/home/tserekh/abc/mysite/main_map/static/js/pred_squares.js
