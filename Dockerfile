@@ -4,6 +4,7 @@ WORKDIR /app
 RUN apt-get update
 RUN apt-get install  libgl1-mesa-glx -y
 RUN apt-get install postgresql-12
+RUN apt install npm
 RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade setuptools
 #RUN git clone --depth 1 https://github.com/tensorflow/models
@@ -15,3 +16,7 @@ RUN pip3 install -r /app/requirements.txt
 #RUN cp /app/models/research/object_detection /usr/local/lib/python3.8/site-packages/object_detection -r
 WORKDIR /app
 #CMD gunicorn --bind 0.0.0.0:$PORT wsgi
+
+curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+sudo apt-get install -y nodejs
+npm install ol

@@ -1,20 +1,14 @@
  function compute_pred_square_style(feature) {
-
 	console.log(feature);
 	var perc_ = 1
-	
-
 	perc_ = Math.min(1, perc_);
 	console.log(perc_);
 	color_ = perc2rg(perc_);
 	color_.push(0.5);
 		return new ol.style.Style({
-
 		  fill: new ol.style.Fill({
 			color: color_,
-			
 		  }),
-
 		})
 }
 function update_pred_square_style(){

@@ -1,5 +1,3 @@
-import get_orgs from './orgs'
-import get_homes from './homes'
 map.on('moveend', function() {
 	get_orgs();
 	get_sale_points()

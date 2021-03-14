@@ -3,180 +3,165 @@
 <meta charset="UTF-8">
 <head>
     <title>Mega map</title>
-	<meta http-equiv="Pragma" content="no-cache">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/static/icons/favicon.png">
-	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato" />
-	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
-	<link rel="stylesheet" href="{{ url_for('static',filename='multirange.css') }}">
-	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"  type="module"></script>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato"/>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='multirange.css') }}">
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"
+            type="module"></script>
 
-	    <title>Clustered Features</title>
+    <title>Clustered Features</title>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/mainpage.css') }}">
-	<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-	<script src="{{ url_for('static',filename='js/liba.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/orgs.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/pred_squares.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/oper_squares.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/sale_points.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/metros.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/homes.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/search.js') }}"></script>
-	<script src="{{ url_for('static',filename='js/mega_script.js') }}"></script>
-	<script data-require="jquery@2.0.3" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="{{ url_for('static',filename='js/liba.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/orgs.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/pred_squares.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/oper_squares.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/sale_points.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/metros.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/homes.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/search.js') }}"></script>
+    <script type="module" src="{{ url_for('static',filename='js/mega_script.js') }}"></script>
+    <script type="module" src="{{ url_for('static',filename='js/map_on.js') }}"></script>
+    <script data-require="jquery@2.0.3" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 </head>
 <body>
-	<div id="map" class="map" style="position: absolute; top: 0px; left: 0px;"></div>
-		<div id='search' >
-		 <input type="search" id="searchAddress"
-			   placeholder="Введите адрес"
-			   onsubmit='searchAddress()'>
-		<span>
-			<button  class ='search_address_button' id='search_address_button' onclick="searchAddress()"></button>
+<div id="map" class="map" style="position: absolute; top: 0px; left: 0px;"></div>
+<div id='search'>
+    <input type="search" id="searchAddress"
+           placeholder="Введите адрес"
+           onsubmit='searchAddress()'>
+    <span>
+			<button class='search_address_button' id='search_address_button' onclick="searchAddress()"></button>
 		</span>
-		<div><button class = 'curtail_bar' type="button" id='curtail_bar' onclick="curtail_bar()"></button></div>
-		</div>
-		<div id='bar_container'>
-			<div id='bar' >
-				
-				<div id='select_bar' >
-					<div  align='left'>
-						<input type="checkbox" name="homes" value="homes" id = "homes"  onchange='homes_settings_show_hide()'>
-						<label id = 'homes_label' for="homes"></label>
-						<input type="checkbox" name="lines" value="lines" id = "lines" >
-						<label id = 'lines_label' for="lines"></label>	
-						<input type="checkbox" name="ground_stops" value="ground_stops" id = "ground_stops" >
-						<label id = 'ground_stops_label' for="ground_stops"></label>
-						<input type="checkbox" name="metros" value="metros" id = "metros">
-						<label id = 'metros_label' for="metros"></label>
+    <div>
+        <button class='curtail_bar' type="button" id='curtail_bar' onclick="curtail_bar()"></button>
+    </div>
+</div>
+<div id='bar_container'>
+    <div id='bar'>
 
-					</div>				
-					  <form align="center">
-							<div id="pred_squares_selecter" align='left' hidden>
-								<div>
-									<input type="checkbox" name="sale_point1" value="sale_point1" id = "sale_point1" checked 
-												onclick='switch_sale_point1();update_pred_square_style();'>
-									<label id = 'sale_point1_label' for="sale_point1"></label>
-									<input type="checkbox" name="sale_point2" value="sale_point2" id = "sale_point2"
-												onclick='switch_sale_point2(); update_pred_square_style();'>
-									<label id = 'sale_point2_label' for="sale_point2"></label>
+        <div id='select_bar'>
+            <div align='left'>
+                <input type="checkbox" name="homes" value="homes" id="homes" onchange='homes_settings_show_hide()'>
+                <label id='homes_label' for="homes"></label>
+                <input type="checkbox" name="lines" value="lines" id="lines">
+                <label id='lines_label' for="lines"></label>
+                <input type="checkbox" name="ground_stops" value="ground_stops" id="ground_stops">
+                <label id='ground_stops_label' for="ground_stops"></label>
+                <input type="checkbox" name="metros" value="metros" id="metros">
+                <label id='metros_label' for="metros"></label>
 
-								</div>
-								<input type="range" id='sale_point_color_range' multiple  min="0" max="2000"  step="1"
-									value='0' style='width:188px' onchange='update_pred_square_style();' > Уровень цвета</input>
+            </div>
+            <form align="center">
+                <div id="pred_squares_selecter" align='left' hidden>
+                    <div>
+                        <input type="checkbox" name="sale_point1" value="sale_point1" id="sale_point1" checked
+                               onclick='switch_sale_point1();update_pred_square_style();'>
+                        <label id='sale_point1_label' for="sale_point1"></label>
+                        <input type="checkbox" name="sale_point2" value="sale_point2" id="sale_point2"
+                               onclick='switch_sale_point2(); update_pred_square_style();'>
+                        <label id='sale_point2_label' for="sale_point2"></label>
 
-							</div>
-							<div id="homes_settings" align='left' hidden>
-								<div>
+                    </div>
+                    <input type="range" id='sale_point_color_range' multiple min="0" max="2000" step="1"
+                           value='0' style='width:188px' onchange='update_pred_square_style();'> Уровень цвета</input>
 
-									<input type="checkbox" name="colored_homes" value="colored_homes" id = "colored_homes" onclick='get_homes();MSH_hide_show()'>
-									<label id = 'colored_homes_label' for="colored_homes"></label>
+                </div>
+                <div id="homes_settings" align='left' hidden>
+                    <div>
 
-								</div>
-								<input type="range" id='homes_color_range' multiple  min="0" max="5000"  step="1"
-									value='0' style='width:188px'  onclick='get_homes()' > Уровень цвета</input>
-							</div>
-							<div id="demand-selector" align='left' hidden>
-								<div>
-									<input type="checkbox" id="sq_homes"  onchange='balance("sq_homes","sq_works");'>
-									<label for="sq_homes"></label>
-									<input type="checkbox" id="sq_works" onchange='balance("sq_homes","sq_works")'>
-									<label for="sq_works"></label>
-									<input type="checkbox" id="sq_male" onchange='balance("sq_male","sq_female")'>
-									<label for="sq_male"></label>
-									<input type="checkbox"  id = "sq_female"  onchange='balance("sq_male","sq_female")'>
-									<label for="sq_female"></label>
-								</div>
-								
+                        <input type="checkbox" name="colored_homes" value="colored_homes" id="colored_homes"
+                               onclick='get_homes();MSH_hide_show()'>
+                        <label id='colored_homes_label' for="colored_homes"></label>
 
+                    </div>
+                    <input type="range" id='homes_color_range' multiple min="0" max="5000" step="1"
+                           value='0' style='width:188px' onclick='get_homes()'> Уровень цвета</input>
+                </div>
 
-									<div>
-										<div align='left'><input type="range" id='sq_age' multiple  min="0" max="6"  step="1"
-											  value='0' style='width:188px'> Возраст</input></div>
-										<div align='left'><input type="range" id='sq_income' multiple  min="0" max="3"  step="1"
-											 value='0'  style='width:188px'> Доход</input></div>
-										<div align='left'><input type="range" id='sq_users' multiple min="0" max="1000"  step="1"
-											 value='0'  style='width:188px'> Людей в квадрате</input></div>
-									</div>
-							</div>
-						
-						<div id='selected_orgs' hidden>
-							<input type="checkbox" name="point_count" value="point_count" id = "point_count">
-							<!-- <label id = 'point_count' for="point_count"></label> -->
-							<form id='orgs_select' method="post" onsubmit="" >
+                <div id='selected_orgs' hidden>
+                    <input type="checkbox" name="point_count" value="point_count" id="point_count">
+                    <form id='orgs_select' method="post" onsubmit="">
 
-								<div class="custom-select">
+                        <div class="custom-select">
 
-								  <select id='selected_nat_class' multiple onchange='get_orgs();get_homes()' >
+                            <select id='selected_nat_class' multiple onchange='get_orgs();get_homes()'>
+                                <option value="Банкомат">Банкомат</option>
+                                <option value="Кафе">Кафе</option>
+                                <option value="Аптека">Аптека</option>
+                                <option value="Супермаркет">Супермаркет</option>
+                                <option value="Банк">Банк</option>
+                                <option value="Ресторан">Ресторан</option>
+                                <option value="Магазин продуктов">Магазин продуктов</option>
+                                <option value="Торговый центр">Торговый центр</option>
+                                <option value="Бар, паб">Бар, паб</option>
+                                <option value="Кофейня">Кофейня</option>
+                                <option value="Быстрое питание">Быстрое питание</option>
+                            </select>
+                        </div>
 
-									<option value="Банкомат">Банкомат</option>
-									<option value="Кафе">Кафе</option>
-									<option value="Аптека">Аптека</option>
-									<option value="Супермаркет">Супермаркет</option>
-									<option value="Банк">Банк</option>
-									<option value="Ресторан">Ресторан</option>
-									<option value="Магазин продуктов">Магазин продуктов</option>
-									<option value="Торговый центр">Торговый центр</option>
-									<option value="Бар, паб">Бар, паб</option>
-									<option value="Кофейня">Кофейня</option>
-									<option value="Быстрое питание">Быстрое питание</option>
+                        <div>
+                            <div id='selected_chain_name_container'>
+                                <select id='selected_chain_name' multiple onchange='get_orgs()'
+                                        style='overflow-y: scroll; width:325px'>
+                                    <option value="Сбербанк России, банкомат">Сбербанк России, банкомат</option>
+                                    <option value="Пятёрочка">Пятёрочка</option>
+                                    <option value="Банк ВТБ, банкомат">Банк ВТБ, банкомат</option>
+                                    <option value="Магнит">Магнит</option>
+                                    <option value="Сбербанк России">Сбербанк России</option>
+                                    <option value="Аптека">Аптека</option>
+                                    <option value="Кафе">Кафе</option>
+                                    <option value="Дикси">Дикси</option>
+                                    <option value="Почта банк">Почта банк</option>
+                                    <option value="Магазин продуктов">Магазин продуктов</option>
+                                </select>
+                            </div>
+                        </div>
 
-								  </select>		
-								</div>
+                    </form>
 
-								<div>
-									<div id='selected_chain_name_container'>
-										<select id='selected_chain_name' multiple onchange='get_orgs()' style='overflow-y: scroll; width:325px'>
-											
-											<option value="Сбербанк России, банкомат">Сбербанк России, банкомат</option>
-											<option value="Пятёрочка">Пятёрочка</option>
-											<option value="Банк ВТБ, банкомат">Банк ВТБ, банкомат</option>
-											<option value="Магнит">Магнит</option>
-											<option value="Сбербанк России">Сбербанк России</option>
-											<option value="Аптека">Аптека</option>
-											<option value="Кафе">Кафе</option>
-											<option value="Дикси">Дикси</option>
-											<option value="Почта банк">Почта банк</option>
-											<option value="Магазин продуктов">Магазин продуктов</option>
-										</select>
-								</div>
-								</div>
-								
-							</form>
-
-							<div>
-								<input type="checkbox" name="heat_map" value="heat_map" id="heat_map" onclick='get_orgs()'>
-								<label for="heat_map"></label>
-								<span>
+                    <div>
+                        <input type="checkbox" name="heat_map" value="heat_map" id="heat_map" onclick='get_orgs()'>
+                        <label for="heat_map"></label>
+                        <span>
 									<span>
 										<label></label>
-										<input id="radius" type="range" min="1" max="20" step="1" value="5" style='width:220px'onchange='update_heat_map_radius()' />
+										<input id="radius" type="range" min="1" max="20" step="1" value="5"
+                                               style='width:220px' onchange='update_heat_map_radius()'/>
 									</span>
 								</span>
-								<span><button  class ='clean_orgs' type="button" onclick="clean_orgs(); get_homes()"></button></span>
-							</div>
-						</div>
-				
-				
+                        <span><button class='clean_orgs' type="button"
+                                      onclick="clean_orgs(); get_homes()"></button></span>
+                    </div>
+                </div>
 
-			</div>
-			<div id='describe_bar' style="display: none;">
-				<div><button class='back_button' type="button" id='back_bar' onclick="back_bar()"></button></div>
-				<div id='describe' style="display: block;"> </div>
-				<div><br /> </div>
-				<!-- <input type="checkbox" name="isocrone" value="isocrone" id="isocrone"> -->
-				<!-- <label for="isocrone"></label> -->
-				
-			</div>
-		</div>
-		
 
-	</div>
+        </div>
+        <div id='describe_bar' style="display: none;">
+            <div>
+                <button class='back_button' type="button" id='back_bar' onclick="back_bar()"></button>
+            </div>
+            <div id='describe' style="display: block;"></div>
+            <div><br/></div>
 
+        </div>
+    </div>
+
+
+</div>
+have_logos = {{have_logos}};
+
+metro_url = "{{ url_for('get_metros') }}"
+org_url = "{{ url_for('get_orgs') }}"
+ground_stop_url = "{{ url_for('get_ground_stops') }}"
+home_url = "{{ url_for('get_homes') }}"
 </body>
 
 </html>

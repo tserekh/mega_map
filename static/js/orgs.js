@@ -1,8 +1,7 @@
 function orgs_bar_func()
 	{
-		
 		if (document.getElementById('orgs_bar').checked){
-			$(document.getElementById('selected_orgs')).show(200)
+	 		$(document.getElementById('selected_orgs')).show(200)
 		}else
 		{
 		$(document.getElementById('selected_orgs')).hide(200)
@@ -28,22 +27,14 @@ function clean_orgs()
 
 function get_orgs(){
 	param_dic = get_boarders();
-	
-
 	param_dic['nat_classes'] = getMultSelectbyId('selected_nat_class').join('_');
 	param_dic['chain_name'] = getMultSelectbyId('selected_chain_name').join('_');
-	
 	param_dic['heat_map'] = document.getElementById('heat_map').checked;
 	// param_dic['point_count'] = document.getElementById('point_count').checked;
 	
 	$.get(org_url,param_dic).then(function(response) {
-		
-		
-		
 		if (!document.getElementById('heat_map').checked){
 			var features = get_org_features(response['orgs']);
-			
-				
 			var source = new ol.source.Vector({
 				features: features,
 				wrapX: false
@@ -77,14 +68,11 @@ function get_orgs(){
 			heat_map_layer.setSource(heat_map_source);
 			orgs_layer.setSource(ol.source.Vector());
 		}
-
 	})
-
 }
 
 
 function get_org_layer(features, obj_color){
-
 	var vectorSource = new ol.source.Vector({
 	features: features,
 	wrapX: false
