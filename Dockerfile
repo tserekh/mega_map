@@ -1,22 +1,12 @@
-FROM python:3.8
+# syntax=docker/dockerfile:1
+FROM python:3
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+WORKDIR /code
+RUN pip install -r requirements.txt
 COPY . ./app
 WORKDIR /app
-RUN apt-get update
-RUN apt-get install  libgl1-mesa-glx -y
-RUN apt-get install postgresql-12
-RUN apt install npm
-RUN pip3 install --upgrade pip
-RUN pip3 install --upgrade setuptools
-#RUN git clone --depth 1 https://github.com/tensorflow/models
-#WORKDIR /app/models/research/
-#RUN chmod -R 777 ./
-#RUN apt install -y protobuf-compiler
-#RUN protoc object_detection/protos/*.proto --python_out=.
 RUN pip3 install -r /app/requirements.txt
-#RUN cp /app/models/research/object_detection /usr/local/lib/python3.8/site-packages/object_detection -r
-WORKDIR /app
-#CMD gunicorn --bind 0.0.0.0:$PORT wsgi
-
 curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash -
 sudo apt-get install -y nodejs
 npm install ol

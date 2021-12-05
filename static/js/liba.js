@@ -245,6 +245,3 @@ function get_line_layer(line_source){
 		
 		return vector
 	}
-
-
-

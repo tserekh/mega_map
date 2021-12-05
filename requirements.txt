@@ -1,8 +1,8 @@
-flask
-flask_sqlalchemy
-flask_script
-flask_migrate
-pyproj
 django
-sklearn
+flask
+flask_migrate
+flask_script
+flask_sqlalchemy
 psycopg2-binary
+pyproj
+sklearn
