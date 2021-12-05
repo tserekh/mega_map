@@ -3,6 +3,8 @@ flask
 flask_migrate
 flask_script
 flask_sqlalchemy
+# sklearn
+pandas
+Pillow
 psycopg2-binary
 pyproj
-sklearn

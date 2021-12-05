@@ -2,7 +2,8 @@ import sys
 
 import pandas as pd
 from pyproj import Proj, transform
-from sklearn.cluster import KMeans
+
+# from sklearn.cluster import KMeans
 
 PROJ3857 = Proj("+init=EPSG:3857")
 PROJ4326 = Proj("+init=EPSG:4326")
