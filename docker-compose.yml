@@ -13,10 +13,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=db
-      - POSTGRES_HOST_AUTH_METHOD=trust
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+#    command: python manage.py
     volumes:
       - .:/code
     ports:

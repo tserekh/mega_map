@@ -1,4 +1,4 @@
-django
+
 flask
 flask_migrate
 flask_script
@@ -8,3 +8,4 @@ pandas
 Pillow
 psycopg2-binary
 pyproj
+Flask-Migrate
