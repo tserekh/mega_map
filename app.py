@@ -1,18 +1,75 @@
+
+import glob
+
 import pandas as pd
-from flask import render_template, request
-from flask import Flask, flash, render_template, request, url_for
+from PIL import Image
+from flask import Flask, render_template, request
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+
 from utils import get_clusters
 
-
 app = Flask(__name__)
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "postgresql://postgres:postgres@postgres:5432/postgres"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@postgres:5432/postgres"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5433/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# app.secret_key = 'secret string'
+con = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
 
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128))
+
+
+class AbstractClass:
+    id = db.Column(db.Integer, primary_key=True)
+    lat = db.Column(db.Float())
+    lon = db.Column(db.Float())
+
+    x = db.Column(db.Float())
+    y = db.Column(db.Float())
+
+    address = db.Column(db.Text())
+    source_id = db.Column(db.Text())
+    source_name = db.Column(db.Text())
+    info = db.Column(db.Text())
+
+
+class MetroStation(db.Model, AbstractClass):
+    station_name = db.Column(db.Text())
+
+
+class Metro(db.Model, AbstractClass):
+    station_name = db.Column(db.Text())
+    exit_name = db.Column(db.Text())
+
+
+class OrganizationNatClass(db.Model, AbstractClass):
+    chain_name = db.Column(db.Text())
+    nat_class = db.Column(db.Text())
 @app.route("/", methods=["POST", "GET"])
 def show_map():
     return render_template("points.html", have_logos=get_have_logos())
+
+
+def get_have_logos():
+    have_logos = glob.glob("../static/map_icons/*")
+    dic = {}
+    for have_logo in have_logos:
+        im = Image.open(have_logo)
+        width, height = im.size
+        square = width * height
+
+        have_logo = have_logo.split("/")[-1]
+        have_logo = ".".join(have_logo.split(".")[:-1])
+        dic[have_logo] = width
+    return dic
 
 
 def create_coord_filter(request):
