@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
-
-con = create_engine("postgresql://postgres:postgres@localhost/postgres")
+from config import SQLALCHEMY_DATABASE_URI
+con = create_engine(SQLALCHEMY_DATABASE_URI)
 data_path = "/home/tserekh"
 
 df_homes = pd.read_csv(f"{data_path}/homes.csv", sep="\t").drop("Unnamed: 0", axis=1)

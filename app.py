@@ -6,14 +6,11 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from PIL import Image
 from sqlalchemy import create_engine
-
+from config import SQLALCHEMY_DATABASE_URI
 from utils import get_clusters
 
 app = Flask(__name__)
-# app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@postgres:5432/postgres"
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "postgresql://postgres:postgres@localhost:5433/postgres"
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # app.secret_key = 'secret string'
 con = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
