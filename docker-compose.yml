@@ -16,9 +16,11 @@ services:
   web:
     build: .
 #    command: python manage.py
+    env_file: .env
     volumes:
       - .:/code
     ports:
       - "5000:5000"
+      - "5001:5001"
     depends_on:
       - db
