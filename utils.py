@@ -1,5 +1,3 @@
-import sys
-
 import pandas as pd
 from sklearn.cluster import KMeans
 
@@ -17,19 +15,19 @@ def get_clusters(df, n_clusters, agg, mode):
 
     if n_clusters < len(df):
         if mode == "clever":
-
-            agg["x"] = "size"
-            kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(df[xy])
-            df["cluster_label"] = kmeans.labels_
-
-            df_clusters = df.groupby("cluster_label").agg(agg).reset_index()
-            df_clusters = df_clusters.reset_index()
-            df_clusters = df_clusters.rename(columns={"x": "count"})
-            df_clusters["is_one"] = df_clusters["count"] != 1
-            df_cluster_centers = pd.DataFrame(kmeans.cluster_centers_, columns=xy)
-            df_cluster_centers["cluster_label"] = df_cluster_centers.index
-            df_clusters = pd.merge(df_clusters, df_cluster_centers, on="cluster_label")
-            df_clusters.drop("cluster_label", axis=1, inplace=True)
+            raise NotImplementedError
+            # agg["x"] = "size"
+            # kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(df[xy])
+            # df["cluster_label"] = kmeans.labels_
+            #
+            # df_clusters = df.groupby("cluster_label").agg(agg).reset_index()
+            # df_clusters = df_clusters.reset_index()
+            # df_clusters = df_clusters.rename(columns={"x": "count"})
+            # df_clusters["is_one"] = df_clusters["count"] != 1
+            # df_cluster_centers = pd.DataFrame(kmeans.cluster_centers_, columns=xy)
+            # df_cluster_centers["cluster_label"] = df_cluster_centers.index
+            # df_clusters = pd.merge(df_clusters, df_cluster_centers, on="cluster_label")
+            # df_clusters.drop("cluster_label", axis=1, inplace=True)
         elif mode == "stupid":
 
             delta_x = df["x"].max() - df["x"].min()

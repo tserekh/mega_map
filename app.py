@@ -1,18 +1,19 @@
-
 import glob
 
 import pandas as pd
-from PIL import Image
 from flask import Flask, render_template, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from PIL import Image
 from sqlalchemy import create_engine
 
 from utils import get_clusters
 
 app = Flask(__name__)
 # app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@postgres:5432/postgres"
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5433/postgres"
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = "postgresql://postgres:postgres@localhost:5433/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # app.secret_key = 'secret string'
 con = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
@@ -22,11 +23,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128))
-
-
 class AbstractClass:
     id = db.Column(db.Integer, primary_key=True)
     lat = db.Column(db.Float())
@@ -34,7 +30,6 @@ class AbstractClass:
 
     x = db.Column(db.Float())
     y = db.Column(db.Float())
-
 
     source_name = db.Column(db.Text())
     info = db.Column(db.Text())
@@ -53,9 +48,11 @@ class Metros(db.Model, AbstractClass):
 class BusStops(db.Model, AbstractClass):
     station_name = db.Column(db.Text())
 
+
 # class OrganizationNatClass(db.Model, AbstractClass):
 #     chain_name = db.Column(db.Text())
 #     nat_class = db.Column(db.Text())
+
 
 @app.route("/", methods=["POST", "GET"])
 def show_map():
@@ -104,7 +101,8 @@ def get_metros():
             select avg(x) as x, avg(y) as y, avg(lat) as lat, avg(lon) as lon, station_name, 'Нет информации' as info
             from public.metros
             group by station_name
-            """, con
+            """,
+            con,
         )
     result = list(df.T.to_dict().values())
     return {"metros": result}

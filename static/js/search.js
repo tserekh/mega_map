@@ -7,7 +7,7 @@ function searchAddress() {
         var info_text = '';
         var GeoObjectCollection = response['response']['GeoObjectCollection'];
         console.log(GeoObjectCollection['metaDataProperty']['GeocoderResponseMetaData']['found']);
-        if (GeoObjectCollection['metaDataProperty']['GeocoderResponseMetaData']['found'] == "0") {
+        if (GeoObjectCollection['metaDataProperty']['GeocoderResponseMetaData']['found'] === "0") {
             console.log("Ничего не нашлось");
             info_text = 'Ничего не нашлось';
         } else {

@@ -1,28 +1,26 @@
-// function get_homes(){
-// 		if (document.getElementById("homes").checked){
-//
-// 				param_dic = get_boarders();
-//
-// 				document.getElementById("homes").disabled = true;
-// 				param_dic['nat_classes'] = getMultSelectbyId('selected_nat_class').join('_');
-// 				$.get(home_url,param_dic).then(function(response) {
-// 					console.log("Success!");
-// 					var features = get_home_features(response['homes']);
-// 					var source = new ol.source.Vector({
-// 						features: features,
-// 						wrapX: false
-// 					});
-// 					home_layer.setSource(source);
-// 					document.getElementById("homes").disabled = false;
-// 					console.log('input')
-// 				})
-//
-// 		}
-// 		else{
-// 			home_layer.setSource(ol.source.Vector());
-//
-// 		}
-// }
+	function get_homes()
+        {
+            if (document.getElementById("homes").checked) {
+            document.getElementById("homes").disabled = true;
+            $.get(home_url, param_dic).then(function (response) {
+            console.log("Success!");
+            var features = get_home_features(response['homes']);
+            var source = new ol.source.Vector({
+                                                  features: features,
+                                                  wrapX: false
+                                              });
+            home_layer.setSource(source);
+            map.addLayer(home_layer);
+            document.getElementById("homes").disabled = false;
+            console.log('input')
+        }
+
+    )
+    } else
+    {
+        map.removeLayer(home_layer);
+    }
+}
 	function get_home_features(data){
 		console.log('inside get_home_features');
 		console.log(data);

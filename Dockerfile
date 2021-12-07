@@ -9,4 +9,3 @@ COPY . /code/
 RUN pip install -r requirements.txt
 #CMD python manage.py
 ENTRYPOINT ["./entrypoint.sh"]
-
