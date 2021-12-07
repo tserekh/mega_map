@@ -35,26 +35,28 @@ class AbstractClass:
     x = db.Column(db.Float())
     y = db.Column(db.Float())
 
-    address = db.Column(db.Text())
+
     source_name = db.Column(db.Text())
     info = db.Column(db.Text())
 
 
-class MetroStation(db.Model, AbstractClass):
-    station_name = db.Column(db.Text())
-
 class Houses(db.Model, AbstractClass):
     flat_num = db.Column(db.Float())
+    address = db.Column(db.Text())
 
 
-class Metro(db.Model, AbstractClass):
+class Metros(db.Model, AbstractClass):
     station_name = db.Column(db.Text())
     exit_name = db.Column(db.Text())
 
 
-class OrganizationNatClass(db.Model, AbstractClass):
-    chain_name = db.Column(db.Text())
-    nat_class = db.Column(db.Text())
+class BusStops(db.Model, AbstractClass):
+    station_name = db.Column(db.Text())
+
+# class OrganizationNatClass(db.Model, AbstractClass):
+#     chain_name = db.Column(db.Text())
+#     nat_class = db.Column(db.Text())
+
 @app.route("/", methods=["POST", "GET"])
 def show_map():
     return render_template("points.html", have_logos=get_have_logos())
@@ -89,16 +91,20 @@ def create_coord_filter(request):
 def get_metros():
     coord_filter = create_coord_filter(request)
     df = pd.read_sql(
-        f"select count(*) from postgres.metros where 1=1 and {coord_filter}", con
+        f"select count(*) from public.metros where 1=1 and {coord_filter}", con
     )
     count = df.iloc[0, 0]
-    if count < 60:
+    if count < 30:
         df = pd.read_sql(
-            f"select * from postgres.metros where 1=1 and {coord_filter}", con
+            f"select * from public.metros where 1=1 and {coord_filter}", con
         )
     else:
         df = pd.read_sql(
-            f"select * from postgres.metro_stations where 1=1 and {coord_filter}", con
+            f"""
+            select avg(x) as x, avg(y) as y, avg(lat) as lat, avg(lon) as lon, station_name, 'Нет информации' as info
+            from public.metros
+            group by station_name
+            """, con
         )
     result = list(df.T.to_dict().values())
     return {"metros": result}
@@ -110,7 +116,7 @@ def get_ground_stops():
     agg = {"source_name": "size"}
     coord_filter = create_coord_filter(request)
     df = pd.read_sql(
-        f"select * from postgres.ground_stops where 1=1 and {coord_filter}", con
+        f"select * from public.bus_stops where 1=1 and {coord_filter}", con
     )
     if len(df):
         df_clusters = get_clusters(df, n_clusters, agg, "stupid")

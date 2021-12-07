@@ -268,7 +268,7 @@ function get_ground_stop_features(data){
 				{
 					'geometry': geom,
 					radius:10,'info': 'Нет информации объекте',
-					'n_ground_stops':data[i]["n_ground_stops"],
+					'count':data[i]["count"],
 					'is_one':data[i]["is_one"]
 					}, );
 			feature.setStyle(compute_ground_stop_style(feature));
@@ -326,14 +326,14 @@ function compute_ground_stop_style(feature) {
 	console.log(feature);
 	if (feature.get('is_one')!=true){
 		style_dic['image'] =  new ol.style.Circle({
-					radius: 7 + feature.get('n_ground_stops').toString().length,
+					radius: 7 + feature.get('count').toString().length,
 					fill: new ol.style.Fill({
 						color: fill_color
 					}),
 				})
 		style_dic['text'] = new ol.style.Text({
 			font: '10px helvetica,sans-serif',
-			text: feature.get('n_ground_stops').toString(),
+			text: feature.get('count').toString(),
 			fill: new ol.style.Fill({
 			color: 'white'
 			}),

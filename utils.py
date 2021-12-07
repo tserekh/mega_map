@@ -43,13 +43,13 @@ def get_clusters(df, n_clusters, agg, mode):
                 lambda x: square_side * round(x / square_side)
             )
 
-            agg["address"] = "size"
+            agg["source_name"] = "size"
             agg["x"] = "mean"
             agg["y"] = "mean"
             df_clusters = (
                 df.groupby(["x_round", "y_round"])
                 .agg(agg)
-                .rename(columns={"address": "count"})
+                .rename(columns={"source_name": "count"})
                 .reset_index()
             )
             df_clusters["is_one"] = df_clusters["count"] == 1
