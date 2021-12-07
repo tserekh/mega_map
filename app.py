@@ -7,17 +7,18 @@ from flask_sqlalchemy import SQLAlchemy
 from PIL import Image
 from sqlalchemy import create_engine
 from config import SQLALCHEMY_DATABASE_URI
+import config
 from utils import get_clusters
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# app.secret_key = 'secret string'
-con = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
+application = Flask(__name__)
+application.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# application.secret_key = 'secret string'
+con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
 
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+db = SQLAlchemy(application)
+migrate = Migrate(application, db)
 
 
 class AbstractClass:
@@ -51,7 +52,7 @@ class BusStops(db.Model, AbstractClass):
 #     nat_class = db.Column(db.Text())
 
 
-@app.route("/", methods=["POST", "GET"])
+@application.route("/", methods=["POST", "GET"])
 def show_map():
     return render_template("points.html", have_logos=get_have_logos())
 
@@ -81,11 +82,11 @@ def create_coord_filter(request):
     return coord_filter
 
 
-@app.route("/get_metros", methods=["GET"])
+@application.route("/get_metros", methods=["GET"])
 def get_metros():
     coord_filter = create_coord_filter(request)
     df = pd.read_sql(
-        f"select count(*) from public.metros {coord_filter}", con
+        f"select count(*) from  public.metros where {coord_filter}", con
     )
     count = df.iloc[0, 0]
     if count < 30:
@@ -106,7 +107,7 @@ def get_metros():
     return {"metros": result}
 
 
-@app.route("/get_ground_stops", methods=["GET"])
+@application.route("/get_ground_stops", methods=["GET"])
 def get_ground_stops():
     n_clusters = 200
     agg = {"source_name": "size"}
@@ -127,12 +128,12 @@ def get_ground_stops():
     return context
 
 
-@app.route("/get_orgs", methods=["GET"])
+@application.route("/get_orgs", methods=["GET"])
 def get_orgs():
     return {"orgs": []}
 
 
-@app.route("/get_homes", methods=["GET"])
+@application.route("/get_homes", methods=["GET"])
 def get_homes():
     coord_filter = create_coord_filter(request)
     df = pd.read_sql(f"select * from houses where {coord_filter}", con)
@@ -144,4 +145,4 @@ def get_homes():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    application.run(host="0.0.0.0", port=5000, debug=(not config.prod))

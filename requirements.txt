@@ -7,4 +7,5 @@ pandas
 Pillow
 psycopg2-binary
 pyproj
+gunicorn
 # sklearn

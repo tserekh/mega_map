@@ -5,7 +5,6 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 5000
 WORKDIR /code
 COPY . /code/
-#COPY requirements.txt /code/
+RUN apt-get update
 RUN pip install -r requirements.txt
-#CMD python manage.py
 ENTRYPOINT ["./entrypoint.sh"]
