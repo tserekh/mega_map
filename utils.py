@@ -1,27 +1,17 @@
 import sys
 
 import pandas as pd
-from pyproj import Proj, transform
-
-# from sklearn.cluster import KMeans
-
-PROJ3857 = Proj("+init=EPSG:3857")
-PROJ4326 = Proj("+init=EPSG:4326")
-
-
-def add3857(row):
-    xy = transform(PROJ4326, PROJ3857, row["lon"], row["lat"])
-    return xy
+from sklearn.cluster import KMeans
 
 
 def get_clusters(df, n_clusters, agg, mode):
     if len(df) == 0:
         return pd.DataFrame()
-    if "x" not in df.columns:
-        df["xy"] = df.apply(add3857, axis=1)
-        df["x"] = df["xy"].apply(lambda xy: xy[0])
-        df["y"] = df["xy"].apply(lambda xy: xy[1])
-        df = df.drop(["xy", "lat", "lon"], axis=1)
+    # if "x" not in df.columns:
+    #     df["xy"] = df.apply(add3857, axis=1)
+    #     df["x"] = df["xy"].apply(lambda xy: xy[0])
+    #     df["y"] = df["xy"].apply(lambda xy: xy[1])
+    #     df = df.drop(["xy", "lat", "lon"], axis=1)
 
     xy = ["x", "y"]
 

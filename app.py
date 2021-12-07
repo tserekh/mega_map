@@ -36,13 +36,15 @@ class AbstractClass:
     y = db.Column(db.Float())
 
     address = db.Column(db.Text())
-    source_id = db.Column(db.Text())
     source_name = db.Column(db.Text())
     info = db.Column(db.Text())
 
 
 class MetroStation(db.Model, AbstractClass):
     station_name = db.Column(db.Text())
+
+class Houses(db.Model, AbstractClass):
+    flat_num = db.Column(db.Float())
 
 
 class Metro(db.Model, AbstractClass):
@@ -131,7 +133,7 @@ def get_orgs():
 @app.route("/get_homes", methods=["GET"])
 def get_homes():
     coord_filter = create_coord_filter(request)
-    df = pd.read_sql(f"select * from postgres.homes where 1=1 and {coord_filter}", con)
+    df = pd.read_sql(f"select * from houses where 1=1 and {coord_filter}", con)
     n_clusters = 100
     agg = {"flat_num": "sum"}
     df_clusters = get_clusters(df, n_clusters, agg, "stupid")
