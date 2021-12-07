@@ -85,18 +85,19 @@ def create_coord_filter(request):
 def get_metros():
     coord_filter = create_coord_filter(request)
     df = pd.read_sql(
-        f"select count(*) from public.metros where and {coord_filter}", con
+        f"select count(*) from public.metros {coord_filter}", con
     )
     count = df.iloc[0, 0]
     if count < 30:
         df = pd.read_sql(
-            f"select * from public.metros where and {coord_filter}", con
+            f"select * from public.metros where {coord_filter}", con
         )
     else:
         df = pd.read_sql(
             f"""
             select avg(x) as x, avg(y) as y, avg(lat) as lat, avg(lon) as lon, station_name, 'Нет информации' as info
             from public.metros
+            where {coord_filter}
             group by station_name
             """,
             con,
@@ -111,7 +112,7 @@ def get_ground_stops():
     agg = {"source_name": "size"}
     coord_filter = create_coord_filter(request)
     df = pd.read_sql(
-        f"select * from public.bus_stops where and {coord_filter}", con
+        f"select * from public.bus_stops where {coord_filter}", con
     )
     if len(df):
         df_clusters = get_clusters(df, n_clusters, agg, "stupid")
@@ -134,7 +135,7 @@ def get_orgs():
 @app.route("/get_homes", methods=["GET"])
 def get_homes():
     coord_filter = create_coord_filter(request)
-    df = pd.read_sql(f"select * from houses where and {coord_filter}", con)
+    df = pd.read_sql(f"select * from houses where {coord_filter}", con)
     n_clusters = 100
     agg = {"flat_num": "sum"}
     df_clusters = get_clusters(df, n_clusters, agg, "stupid")

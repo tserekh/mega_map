@@ -1,6 +1,4 @@
 import pandas as pd
-from sklearn.cluster import KMeans
-
 
 def get_clusters(df, n_clusters, agg, mode):
     if len(df) == 0:
