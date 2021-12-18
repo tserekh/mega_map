@@ -21,11 +21,11 @@ def build_graph(df):
 
     df_route_graph = df[df["route_short_name__next"] == df["route_short_name"]]
     df_transfer = (
-        df.groupby("stop_id").agg({"stop_id-route_short_name": list}).reset_index()
+        df.groupby("stop_id").agg({"stop_id__route_short_name": list}).reset_index()
     )
-    df_transfer = df_transfer[df_transfer["stop_id-route_short_name"].apply(len) > 1]
+    df_transfer = df_transfer[df_transfer["stop_id__route_short_name"].apply(len) > 1]
     transfer_list = list(
-        map(lambda x: tuple(x), df_transfer["stop_id-route_short_name"].values)
+        map(lambda x: tuple(x), df_transfer["stop_id__route_short_name"].values)
     )
 
     transfer_nodes = reduce(lambda x, y: x + y, (map(get_pairs, transfer_list)))
@@ -43,7 +43,7 @@ def build_graph(df):
     return G
 
 
-def get_potenstilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
+def get_potentilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
     speed_met_in_min = 66
     tree = KDTree(df_stop[["x", "y"]], leaf_size=40)
     dists, inds = tree.query([start_coords_xy, end_coords_xy], k=10)
@@ -54,14 +54,16 @@ def get_potenstilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
     df_end_stop["dist"] = dists[1]
     df_start_stop["time"] = df_start_stop["dist"] / speed_met_in_min
     df_end_stop["time"] = df_end_stop["dist"] / speed_met_in_min
-
+    print(df)
+    print()
+    print(df_start_stop)
     df_potential_start = pd.merge(
-        df[["stop_id", "route_short_name", "stop_id-route_short_name"]],
+        df[["stop_id", "route_short_name", "stop_id__route_short_name"]],
         df_start_stop[["stop_id", "time"]],
         on="stop_id",
     )
     df_potential_end = pd.merge(
-        df[["stop_id", "route_short_name", "stop_id-route_short_name"]],
+        df[["stop_id", "route_short_name", "stop_id__route_short_name"]],
         df_end_stop[["stop_id", "time"]],
         on="stop_id",
     )
@@ -70,10 +72,10 @@ def get_potenstilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
     df_potential_end["end_point"] = "end_point"
 
     df_potential_start = df_potential_start[
-        ["start_point", "stop_id-route_short_name", "time"]
+        ["start_point", "stop_id__route_short_name", "time"]
     ]
     df_potential_end = df_potential_end[
-        ["stop_id-route_short_name", "end_point", "time"]
+        ["stop_id__route_short_name", "end_point", "time"]
     ]
     return df_potential_start, df_potential_end
 
@@ -81,7 +83,7 @@ def get_potenstilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
 def get_stops_for_routing(con):
 
     return pd.read_sql(
-        f"""select * from postgres.stops
+        f"""select * from public.bus_stops where
     lat>={config.lat_min} and lat<={config.lat_max} and lon>={config.lon_min} and lon<={config.lon_max}
                        """,
         con,
@@ -103,12 +105,13 @@ def get_route(G, df_stop):
     return shortest_path_coords, shortest_path_nodes
 
 
-def get_pretty_route(G, df_stop, lat_start, lon_start, lat_end, lon_end):
+def get_pretty_route(G, df, df_stop, lat_start, lon_start, lat_end, lon_end):
     transformer = Transformer.from_crs("epsg:4326", "epsg:3857")
     start_coords_xy = transformer.transform(lat_start, lon_start)
     end_coords_xy = transformer.transform(lat_end, lon_end)
 
-    df_potential_start, df_potential_end = get_potenstilal_start_and_end(
+    df_potential_start, df_potential_end = get_potentilal_start_and_end(
+        df,
         df_stop, start_coords_xy, end_coords_xy
     )
     G.add_weighted_edges_from(df_potential_start.values)

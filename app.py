@@ -1,10 +1,12 @@
 import glob
+from flask import g
 
 import pandas as pd
-from flask import Flask, render_template, request
+from PIL import Image
+from flask import Flask
+from flask import render_template, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from PIL import Image
 from sqlalchemy import create_engine
 
 import config
@@ -12,6 +14,7 @@ from config import SQLALCHEMY_DATABASE_URI
 from routing import (build_graph, get_graph_data, get_pretty_route,
                      get_stops_for_routing)
 from utils import get_clusters
+import logging
 
 application = Flask(__name__)
 application.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
@@ -21,10 +24,15 @@ con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
 db = SQLAlchemy(application)
 migrate = Migrate(application, db)
 
+logging.info('Start initializing graph')
 df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
 G = build_graph(df)
-del df
+logging.info('Initializing graph complete')
+# logging.error('Something wrong with global variables')
+# logging.info('All ok with global variables')
+
+
 
 
 class AbstractClass:
@@ -55,16 +63,16 @@ class BusStops(db.Model, AbstractClass):
 
 
 class Graph(db.Model, AbstractClass):
-    trip_id = db.Column(db.Integer())
+    trip_id = db.Column(db.Text())
     stop_id = db.Column(db.Integer())
     stop_sequence = db.Column(db.Integer())
     route_id = db.Column(db.Integer())
     service_id = db.Column(db.Integer())
     route_short_name = db.Column(db.Text())
+    route_short_name__next = db.Column(db.Text())
     stop_id__route_short_name = db.Column(db.Text())
     stop_id__route_short_name__next = db.Column(db.Text())
     time = db.Column(db.Float())
-
 
 @application.route("/", methods=["POST", "GET"])
 def show_map():
@@ -158,11 +166,12 @@ def get_route():
     lon_start = float(request.args.get("lon_start"))
     lat_end = float(request.args.get("lat_end"))
     lon_end = float(request.args.get("lon_end"))
-    shortest_path_coords, shortest_path_nodes = get_pretty_route(
-        G, df_stops_for_routing, lat_start, lon_start, lat_end, lon_end
+    shortest_path_coords, shortest_path_nodes = get_pretty_route(G,
+        df, df_stops_for_routing, lat_start, lon_start, lat_end, lon_end
     )
-    return {"route": [shortest_path_coords, shortest_path_nodes]}
-
+    G.remove_node("start_point")
+    G.remove_node("end_point")
+    return {"route": [list(shortest_path_coords.T.to_dict().values()), shortest_path_nodes]}
 
 if __name__ == "__main__":
     application.run(host="0.0.0.0", port=5000, debug=(not config.prod))
