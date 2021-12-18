@@ -1,6 +1,8 @@
 import pandas as pd
 from sqlalchemy import create_engine
+
 from config import SQLALCHEMY_DATABASE_URI
+
 con = create_engine(SQLALCHEMY_DATABASE_URI)
 data_path = "/home/tserekh"
 

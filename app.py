@@ -6,8 +6,9 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from PIL import Image
 from sqlalchemy import create_engine
-from config import SQLALCHEMY_DATABASE_URI
+
 import config
+from config import SQLALCHEMY_DATABASE_URI
 from utils import get_clusters
 
 application = Flask(__name__)
@@ -85,14 +86,10 @@ def create_coord_filter(request):
 @application.route("/get_metros", methods=["GET"])
 def get_metros():
     coord_filter = create_coord_filter(request)
-    df = pd.read_sql(
-        f"select count(*) from  public.metros where {coord_filter}", con
-    )
+    df = pd.read_sql(f"select count(*) from  public.metros where {coord_filter}", con)
     count = df.iloc[0, 0]
     if count < 30:
-        df = pd.read_sql(
-            f"select * from public.metros where {coord_filter}", con
-        )
+        df = pd.read_sql(f"select * from public.metros where {coord_filter}", con)
     else:
         df = pd.read_sql(
             f"""
@@ -112,9 +109,7 @@ def get_ground_stops():
     n_clusters = 200
     agg = {"source_name": "size"}
     coord_filter = create_coord_filter(request)
-    df = pd.read_sql(
-        f"select * from public.bus_stops where {coord_filter}", con
-    )
+    df = pd.read_sql(f"select * from public.bus_stops where {coord_filter}", con)
     if len(df):
         df_clusters = get_clusters(df, n_clusters, agg, "stupid")
         df_clusters.rename(columns={"source_name": "n_ground_stops"}, inplace=True)
