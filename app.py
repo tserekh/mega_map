@@ -166,12 +166,12 @@ def get_route():
     lon_start = float(request.args.get("lon_start"))
     lat_end = float(request.args.get("lat_end"))
     lon_end = float(request.args.get("lon_end"))
-    shortest_path_coords, shortest_path_nodes = get_pretty_route(G,
+    shortest_path_coords, shortest_path_nodes, weight = get_pretty_route(G,
         df, df_stops_for_routing, lat_start, lon_start, lat_end, lon_end
     )
     G.remove_node("start_point")
     G.remove_node("end_point")
-    return {"route": [list(shortest_path_coords.T.to_dict().values()), shortest_path_nodes]}
+    return {"route": [list(shortest_path_coords.T.to_dict().values()), shortest_path_nodes, weight]}
 
 if __name__ == "__main__":
     application.run(host="0.0.0.0", port=5000, debug=(not config.prod))
