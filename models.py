@@ -12,5 +12,3 @@ con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
 
 db = SQLAlchemy(application)
 migrate = Migrate(application, db)
-
-

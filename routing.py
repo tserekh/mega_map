@@ -2,8 +2,8 @@ from functools import reduce
 from itertools import product
 
 import networkx as nx
-from networkx.classes.function import path_weight
 import pandas as pd
+from networkx.classes.function import path_weight
 from pyproj import Transformer
 from sklearn.neighbors import KDTree
 
@@ -92,7 +92,9 @@ def get_stops_for_routing(con):
 
 
 def get_route(G, df_stop):
-    shortest_path_nodes = nx.shortest_path(G, "start_point", "end_point", weight='weight')
+    shortest_path_nodes = nx.shortest_path(
+        G, "start_point", "end_point", weight="weight"
+    )
     weight = path_weight(G, shortest_path_nodes, weight="weight")
     route_stop_ids = list(
         map(lambda x: int(x.split("__")[0]), shortest_path_nodes[1:-1])
@@ -113,8 +115,7 @@ def get_pretty_route(G, df, df_stop, lat_start, lon_start, lat_end, lon_end):
     end_coords_xy = transformer.transform(lon_end, lat_end)
 
     df_potential_start, df_potential_end = get_potentilal_start_and_end(
-        df,
-        df_stop, start_coords_xy, end_coords_xy
+        df, df_stop, start_coords_xy, end_coords_xy
     )
     G.add_weighted_edges_from(df_potential_start.values)
     G.add_weighted_edges_from(df_potential_end.values)
