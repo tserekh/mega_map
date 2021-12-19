@@ -26,7 +26,6 @@ function searchAddress() {
             })
 
         }
-
         document.getElementById("select_bar").style.display = "none";
         document.getElementById("describe_bar").style.display = "block";
         document.getElementById("bar").style.display = "block";
@@ -39,14 +38,11 @@ function searchAddress() {
         });
         feature.setStyle(compute_search_address_style(feature, '#FC00C3'));
         features = [feature];
-
         var source = new ol.source.Vector({
             features: features,
             wrapX: false
         });
-
         search_address_layer.setSource(source);
-
     })
 }
 
