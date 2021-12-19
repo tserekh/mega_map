@@ -6,10 +6,12 @@ from flask import Flask, g, render_template, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from PIL import Image
+from pyproj import Transformer
 from sqlalchemy import create_engine
-from geocode import geocode
+
 import config
 from config import SQLALCHEMY_DATABASE_URI
+from geocode import geocode
 from routing import (build_graph, get_graph_data, get_pretty_route,
                      get_stops_for_routing)
 from utils import get_clusters
@@ -174,15 +176,25 @@ def get_route():
     )
     G.remove_node("start_point")
     G.remove_node("end_point")
-    short_route_names = list(map(lambda x: x.split("__")[-1], shortest_path_nodes[1:-1]))
-    return {
-        "route": [
-            list(shortest_path_coords[["x", "y"]].T.to_dict().values()),
-            short_route_names,
-            total_weight,
-        ]
-    }
+    transformer = Transformer.from_crs("epsg:4326", "epsg:3857")
 
+    start_coords_xy = transformer.transform(lat_start, lon_start)
+    end_coords_xy = transformer.transform(lat_end, lon_end)
+    short_route_names = list(
+        map(lambda x: x.split("__")[-1], shortest_path_nodes[1:-1])
+    )
+
+    return {
+        "route": {
+            "shortest_path_coords": list(
+                shortest_path_coords[["x", "y"]].T.to_dict().values()
+            ),
+            "short_route_names": short_route_names,
+            "total_weight": total_weight,
+            "start_coords_xy": start_coords_xy,
+            "end_coords_xy": end_coords_xy,
+        }
+    }
 
 
 if __name__ == "__main__":

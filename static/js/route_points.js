@@ -1,41 +1,81 @@
- function get_route_points(){
-		if (!document.getElementById('show_route_points').checked){
-			sale_points_layer.setSource(new ol.source.Vector())
-			fresh_sale_points_layer.setSource(new ol.source.Vector())
-		}
-		param_dic = get_boarders();
-		param_dic['delete_all'] = false;
-		$.get(get_points_url,param_dic).then(function(response) {
-			var features = get_sale_points_features(response['route_points']);
-			var source = new ol.source.Vector({
-				features: features,
-				wrapX: false
-			});
-			sale_points_layer.setSource(source);
-			console.log('input')
-		})
-	}
-function delete_route_points_points()
-	{	param_dic = {};
-		fresh_sale_points_layer.setSource(new ol.source.Vector());
-		param_dic['delete_all'] = true;
-		console.log('delete all points');
-		$.get(get_sale_points_url,param_dic).then(get_route_points())
-		}
-	function get_route_points_features(data){
-		console.log('inside get_sale_points_features');
 
-		var features = new Array(data.length);
-		for (var i = 0; i < data.length; ++i){
-			point = [data[i]["x"],data[i]["y"]];
-			geom = new ol.geom.Point(point);
-			feature = new ol.Feature({
-					'geometry': geom,
-					radius:11,
-					'name': name,
-					});
-			feature.setStyle(compute_sale_point_style(feature));
-			features[i] = feature;
-		}
-		return features
-	}
+function get_route_source(lines){
+	console.log(lines);
+	geojsonfeatures = lines.map(function(x){
+	list_of_coords1 = x['line'];
+		return {
+				  'type': 'Feature',
+				  'geometry': {
+					'type': 'LineString',
+					'coordinates': lines
+				  },
+				}
+
+		})
+	var geojsonObject = {
+		'type': 'FeatureCollection',
+		'crs': {
+		  'type': 'name',
+		  'properties': {
+			'name': 'EPSG:3857'
+		  }
+		},
+		'features': geojsonfeatures
+	  };
+
+	 features = (new ol.format.GeoJSON()).readFeatures(geojsonObject);
+
+	 var line_source = new ol.source.Vector({
+		features: features
+	  });
+	return line_source
+  }
+function get_route_layer(line_source){
+	 var line_layer = new ol.layer.Vector({
+		source: line_source,
+	  });
+	return line_layer
+  }
+      function get_route() {
+        let address_from = document.getElementById("searchAddressFrom").value;
+        let address_to = document.getElementById("searchAddressTo").value;
+        param_dic = {}
+        param_dic['address_from'] = address_from
+        param_dic['address_to'] = address_to
+        $.get(route_url, param_dic).then(
+            function (response) {
+                shortest_path_coords = response['route']["shortest_path_coords"];
+                short_route_names = response['route']["short_route_names"];
+                total_weight = response['route']["total_weight"];
+                coords1 = response['route']["coords1"];
+                coords2 = response['route']["coords2"];
+                view.animate({
+                    center: [(coords1[0] + coords2[0]) / 2, (coords1[1] + coords2[1]) / 2,],
+                    duration: 500,
+                    zoom: 15
+                })
+
+                features = [
+                    ol.Feature({
+                        'geometry': geom1,
+                        'info': info_text,
+                        radius: 10,
+                    }),
+                    ol.Feature({
+                        'geometry': geom2,
+                        'info': info_text,
+                        radius: 10,
+                    }),
+                ];
+                var source = new ol.source.Vector({
+                    features: features,
+                    wrapX: false,
+                    style: compute_search_address_style
+                });
+                search_address_layer.setSource(source);
+
+                lines_source = get_route_source(lines)
+				line_layer = get_route_layer(lines_source)
+            }
+        )
+    }

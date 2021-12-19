@@ -255,65 +255,6 @@
     }
 
 
-    function compute_sale_point_style(feature) {
-        fill_color = '#3498db';
-        style_dic = {}
-        style_dic['image'] = new ol.style.Circle({
-            radius: feature.get('radius'),
-            fill: new ol.style.Fill({
-                color: fill_color
-            }),
-        })
-
-
-        style_dic['text'] = new ol.style.Text({
-            font: '10px helvetica,sans-serif',
-            text: feature.get('name'),
-            fill: new ol.style.Fill({
-                color: 'white',
-            }),
-        })
-        return new ol.style.Style(style_dic);
-    }
-
-    function compute_org_style(feature) {
-        var fill_color = 'brown';
-        var style_dic = {}
-        if (feature.get('count') !== 1) {
-            style_dic['image'] = new ol.style.Circle({
-                radius: 7 + feature.get('count').toString().length,
-                fill: new ol.style.Fill({
-                    color: fill_color
-                }),
-            })
-            style_dic['text'] = new ol.style.Text({
-                font: '10px helvetica,sans-serif',
-                text: feature.get('count').toString(),
-                fill: new ol.style.Fill({
-                    color: 'white'
-                }),
-            })
-        } else {
-            chain_name = feature.get('chain_name');
-
-            if (have_logos[chain_name] !== undefined) {
-                style_dic['image'] = new ol.style.Icon({
-                    radius: feature.get('radius'),
-                    scale: 25 / have_logos[chain_name],
-
-                    src: decodeURIComponent('/static/map_icons/' + chain_name + '.png')
-                })
-            } else {
-                style_dic['image'] = new ol.style.Circle({
-                    radius: 6,
-                    fill: new ol.style.Fill({
-                        color: fill_color
-                    }),
-                })
-            }
-        }
-        return new ol.style.Style(style_dic);
-    }
 
     var center_coord = [37.622504, 55.753215];
     center_coord = ol.proj.fromLonLat(center_coord);
@@ -406,18 +347,16 @@
                 route_params["lat_end"] = coords2[0]
                 route_params["lon_end"] = coords2[1]
                 $.get(route_url, route_params).then(function (response) {
-                    console.log(response)
                     let route = response['route'];
-                    console.log(route)
-                    source = get_lines_source(route);
-                    line_layer = get_line_layer(source);
-                    console.log(line_layer);
-                    map.addLayer(line_layer);
+                    source = get_route_source(route);
+                    route_layer = get_route_layer(source);
+                    console.log(route_layer);
+                    map.addLayer(route_layer);
                     document.getElementById("route").disabled = false;
                 })
             } else {
-                map.removeLayer(line_layer);
-                document.getElementById("selected_line_type").disabled = false;
+                map.removeLayer(route_layer);
+                document.getElementById("route").disabled = false;
             }
         }
         if (value === 'ground_stops') {
