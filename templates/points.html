@@ -3,7 +3,6 @@
 <meta charset="UTF-8">
 <head>
     <title>Mega map</title>
-{#    <meta http-equiv="Pragma" content="no-cache">#}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/static/icons/favicon.png">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato"/>
@@ -11,14 +10,9 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='multirange.css') }}">
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"
             type="module"></script>
-
     <title>Clustered Features</title>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/mainpage.css') }}">
-    <script src="{{ url_for('static',filename='js/liba.js') }}"></script>
-    <script src="{{ url_for('static',filename='js/orgs.js') }}"></script>
-    <script src="{{ url_for('static',filename='js/pred_squares.js') }}"></script>
-    <script src="{{ url_for('static',filename='js/oper_squares.js') }}"></script>
     <script src="{{ url_for('static',filename='js/sale_points.js') }}"></script>
     <script src="{{ url_for('static',filename='js/metros.js') }}"></script>
     <script src="{{ url_for('static',filename='js/homes.js') }}"></script>
@@ -43,7 +37,6 @@
 </div>
 <div id='bar_container'>
     <div id='bar'>
-
         <div id='select_bar'>
             <div align='left'>
                 <input type="checkbox" name="homes" value="homes" id="homes" onchange='homes_settings_show_hide()'>
@@ -52,7 +45,6 @@
                 <label id='ground_stops_label' for="ground_stops"></label>
                 <input type="checkbox" name="metros" value="metros" id="metros">
                 <label id='metros_label' for="metros"></label>
-
             </div>
             <form>
 
@@ -117,11 +109,13 @@
 
 </body>
 <script>
+    const ol = require("ol");
     have_logos = {{have_logos}};
     metro_url = "{{ url_for('get_metros') }}"
     org_url = "{{ url_for('get_orgs') }}"
     ground_stop_url = "{{ url_for('get_ground_stops') }}"
     home_url = "{{ url_for('get_homes') }}"
+    route_url = "{{ url_for('get_route') }}"
     org_url = "get_orgs"
     metro_url = "get_metros"
     home_url = "get_homes"
@@ -174,7 +168,6 @@ function homes_settings_show_hide(){
 	}
 }
 
-
       var vector = new ol.layer.Vector({
         source: new ol.source.Vector(),
 		style:compute_new_point_style,
@@ -185,23 +178,11 @@ function homes_settings_show_hide(){
 		style:compute_new_point_style,
       });
 
-	  var heat_map_layer = new ol.layer.Heatmap({
-       source: new ol.source.Vector(),
-	   radius:10
-	  });
-
-	 var oper_squares_layer = new ol.layer.Vector({
-		source: new ol.source.Vector(),
-		style: compute_oper_square_style
-	  });
     var ground_stop_layer  = new ol.layer.Vector({
 		source: new ol.source.Vector(),
 		style: compute_oper_square_style
 	  });
-	 var pred_squares_layer = new ol.layer.Vector({
-		source: new ol.source.Vector(),
-		style: compute_pred_square_style
-	  });
+
 function get_ground_stop_features(data){
 		console.log(data);
 		console.log(data[0]);
@@ -266,8 +247,6 @@ function compute_new_point_style(feature) {
 	}
 function compute_ground_stop_style(feature) {
 	var fill_color = '#6D6D6D';
-
-
 	var style_dic = {}
 	console.log(feature);
 	if (feature.get('is_one')!==true){
@@ -432,16 +411,6 @@ function compute_ground_stop_style(feature) {
 	}
 
 
-	function getMultSelectbyId(id_)
-
-	{
-		var select = document.getElementById(id_);
-		var selected = [];
-		for (var i = 0; i < select.length; i++) {
-			if (select[i].selected) selected.push(select[i].value);
-				}
-		return selected
-	}
 
 
 
@@ -512,34 +481,6 @@ function compute_ground_stop_style(feature) {
 
 
 	});
-
-	function addRevenues(vector){
-		features = vector.getSource().getFeatures();
-		console.log(features);
-		var revenue_;
-		lonlatOnMap = [];
-		for (var i = 0; i < features.length; ++i){
-			geometry = features[i].getGeometry();
-
-			if (geometry.getType() == 'Point'){
-				lonlat3857= geometry['A'];
-				lonlat = ol.proj.transform(lonlat3857, 'EPSG:3857', 'EPSG:4326');
-				coord_dic = {};
-				coord_dic['lon'] = lonlat[0];
-				coord_dic['lat'] = lonlat[1];
-				lonlat = ol.proj.fromLonLat(lonlat);
-
-				a = Math.round(lonlat[0]).toString().slice(-3,)
-				b = Math.round(lonlat[1]).toString().slice(-3,);
-				revenue_ = 2*a*b+1200000
-				revenue_ = parseFloat(revenue_);
-				features[i]['N']['info']  = "Прогноз выручки " + revenue_;
-				features[i]['N']['revenue']  = (Math.round(revenue_/10000)/100).toString()+'M';
-
-			}
-		}
-	}
-
 document.getElementsByClassName("ol-attribution")[0].style.display='none'
     map.on('moveend', function() {
 	// get_orgs();
