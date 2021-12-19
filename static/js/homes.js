@@ -1,3 +1,4 @@
+
 function get_homes() {
     if (document.getElementById("homes").checked) {
         document.getElementById("homes").disabled = true;
@@ -26,7 +27,6 @@ function get_home_features(data) {
     for (var i = 0; i < data.length; ++i) {
         point = [data[i]["x"], data[i]["y"]];
         geom = new ol.geom.Point(point);
-
         address = data[i]["address"];
         flat_num = data[i]["flat_num"];
         flat_num = Math.round(2.7 * flat_num);

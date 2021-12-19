@@ -95,31 +95,27 @@ function get_line_layer(line_source) {
 }
 
 function get_metro_features(data) {
-    console.log(data);
     var features = [];
     for (var i = 0; i < data.length; ++i) {
         point = [data[i]["lon"], data[i]["lat"]];
         point = ol.proj.fromLonLat(point);
         geom = new ol.geom.Point(point);
-        console.log(data[i]);
         if (data[i]["exit_name"] !== undefined) {
             info = data[i]["exit_name"];
         } else {
             info = data[i]["station_name"];
-
         }
 
         feature = new ol.Feature({'geometry': geom, radius: 10, 'info': '<br/>' + info, name: ''});
         feature.setStyle(compute_metro_style(feature, 'black'));
         features.push(feature);
     }
-    console.log(features);
     return features;
 }
 
 
 //<!-- GET LAYER -->
-function get_metro_layer(features, obj_color) {
+function get_metro_layer(features) {
     var vectorSource = new ol.source.Vector({
         features: features,
         wrapX: false
@@ -129,6 +125,19 @@ function get_metro_layer(features, obj_color) {
     var vector = new ol.layer.Vector({
         source: vectorSource,
     });
-
     return vector;
+}
+
+ function compute_oper_square_style(feature) {
+
+	perc = feature.get('result_rate');
+
+	perc = Math.min(1, perc);
+	color = color_func(perc);
+	color.push(0.5);
+		return new ol.style.Style({
+		  fill: new ol.style.Fill({
+			color: color,
+		  }),
+		})
 }

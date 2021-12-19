@@ -11,17 +11,3 @@ function compute_metro_style(feature, fill_color) {
         })
     });
 }
-
-function switch_metro_shop_home1() {
-    if (!document.getElementById('two_points').checked) {
-        document.getElementById('two_points').checked = true;
-    }
-    document.getElementById('three_points').checked = false;
-}
-
-function switch_metro_shop_home2() {
-    if (!document.getElementById('three_points').checked) {
-        document.getElementById('three_points').checked = true;
-    }
-    document.getElementById('two_points').checked = false;
-}
