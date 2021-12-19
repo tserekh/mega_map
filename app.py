@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from PIL import Image
 from sqlalchemy import create_engine
-
+from geocode import geocode
 import config
 from config import SQLALCHEMY_DATABASE_URI
 from routing import (build_graph, get_graph_data, get_pretty_route,
@@ -159,22 +159,30 @@ def get_homes():
 
 @application.route("/get_route", methods=["GET"])
 def get_route():
-    lat_start = float(request.args.get("lat_start"))
-    lon_start = float(request.args.get("lon_start"))
-    lat_end = float(request.args.get("lat_end"))
-    lon_end = float(request.args.get("lon_end"))
-    shortest_path_coords, shortest_path_nodes, weight = get_pretty_route(
+    if request.args.get("lat_start") is None:
+        address_from = request.args.get("address_from")
+        address_to = request.args.get("address_to")
+        lat_start, lon_start = geocode(address_from)
+        lat_end, lon_end = geocode(address_to)
+    else:
+        lat_start = float(request.args.get("lat_start"))
+        lon_start = float(request.args.get("lon_start"))
+        lat_end = float(request.args.get("lat_end"))
+        lon_end = float(request.args.get("lon_end"))
+    shortest_path_coords, shortest_path_nodes, total_weight = get_pretty_route(
         G, df, df_stops_for_routing, lat_start, lon_start, lat_end, lon_end
     )
     G.remove_node("start_point")
     G.remove_node("end_point")
+    short_route_names = list(map(lambda x: x.split("__")[-1], shortest_path_nodes[1:-1]))
     return {
         "route": [
-            list(shortest_path_coords.T.to_dict().values()),
-            shortest_path_nodes,
-            weight,
+            list(shortest_path_coords[["x", "y"]].T.to_dict().values()),
+            short_route_names,
+            total_weight,
         ]
     }
+
 
 
 if __name__ == "__main__":

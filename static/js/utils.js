@@ -107,7 +107,7 @@ function get_metro_features(data) {
         }
 
         feature = new ol.Feature({'geometry': geom, radius: 10, 'info': '<br/>' + info, name: ''});
-        feature.setStyle(compute_metro_style(feature, 'black'));
+        feature.setStyle(compute_metro_style(feature));
         features.push(feature);
     }
     return features;

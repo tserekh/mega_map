@@ -111,8 +111,8 @@ def get_route(G, df_stop):
 
 def get_pretty_route(G, df, df_stop, lat_start, lon_start, lat_end, lon_end):
     transformer = Transformer.from_crs("epsg:4326", "epsg:3857")
-    start_coords_xy = transformer.transform(lon_start, lat_start)
-    end_coords_xy = transformer.transform(lon_end, lat_end)
+    start_coords_xy = transformer.transform(lat_start, lon_start)
+    end_coords_xy = transformer.transform(lat_end, lon_end)
 
     df_potential_start, df_potential_end = get_potentilal_start_and_end(
         df, df_stop, start_coords_xy, end_coords_xy

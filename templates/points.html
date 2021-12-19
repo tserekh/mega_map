@@ -25,11 +25,14 @@
 <body>
 <div id="map" class="map" style="position: absolute; top: 0; left: 0;"></div>
 <div id='search'>
-    <input type="search" id="searchAddress"
-           placeholder="Введите адрес"
-           onsubmit='searchAddress()'>
+    <input type="search" id="searchAddressFrom"
+           placeholder="Адрес откуда"
+           onsubmit='get_route()'>
+    <input type="search" id="searchAddressTo"
+           placeholder="Адрес откуда"
+           onsubmit='get_route()'>
     <span>
-			<button class='search_address_button' id='search_address_button' onclick="searchAddress()"></button>
+			<button class='search_address_button' id='search_address_button' onclick="get_route()"></button>
 		</span>
     <div>
         <button class='curtail_bar' type="button" id='curtail_bar' onclick="curtail_bar()"></button>
@@ -45,51 +48,9 @@
                 <label id='ground_stops_label' for="ground_stops"></label>
                 <input type="checkbox" name="metros" value="metros" id="metros">
                 <label id='metros_label' for="metros"></label>
+                <input type="checkbox" name="route" value="route" id="route">
+                <label id='route_label' for="route"></label>
             </div>
-            <form>
-
-                <div id='selected_orgs' hidden>
-                    <input type="checkbox" name="point_count" value="point_count" id="point_count">
-                    <form id='orgs_select' method="post" onsubmit="">
-
-                        <div class="custom-select">
-
-                            <select id='selected_nat_class' multiple onchange='get_orgs();get_homes()'>
-                                <option value="Банкомат">Банкомат</option>
-                                <option value="Кафе">Кафе</option>
-                                <option value="Аптека">Аптека</option>
-                                <option value="Супермаркет">Супермаркет</option>
-                                <option value="Банк">Банк</option>
-                                <option value="Ресторан">Ресторан</option>
-                                <option value="Магазин продуктов">Магазин продуктов</option>
-                                <option value="Торговый центр">Торговый центр</option>
-                                <option value="Бар, паб">Бар, паб</option>
-                                <option value="Кофейня">Кофейня</option>
-                                <option value="Быстрое питание">Быстрое питание</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <div id='selected_chain_name_container'>
-                                <select id='selected_chain_name' multiple onchange='get_orgs()'
-                                        style='overflow-y: scroll; width:325px'>
-                                    <option value="Сбербанк России, банкомат">Сбербанк России, банкомат</option>
-                                    <option value="Пятёрочка">Пятёрочка</option>
-                                    <option value="Банк ВТБ, банкомат">Банк ВТБ, банкомат</option>
-                                    <option value="Магнит">Магнит</option>
-                                    <option value="Сбербанк России">Сбербанк России</option>
-                                    <option value="Аптека">Аптека</option>
-                                    <option value="Кафе">Кафе</option>
-                                    <option value="Дикси">Дикси</option>
-                                    <option value="Почта банк">Почта банк</option>
-                                    <option value="Магазин продуктов">Магазин продуктов</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-            </form>
 
         </div>
         <div id='describe_bar' style="display: none;">
@@ -116,7 +77,7 @@
     document.getElementById("search").addEventListener("keyup", function (event) {
         event.preventDefault();
         if (event.keyCode === 13) {
-            searchAddress();
+            get_route();
         }
     });
 
@@ -183,6 +144,7 @@
                     'is_one': data[i]["is_one"]
                 },);
             feature.setStyle(compute_ground_stop_style(feature));
+
             features.push(feature);
         }
         console.log(features);
@@ -385,7 +347,7 @@
             // home_layer,
             // orgs_layer,
             search_address_layer,
-            ground_stop_layer
+            {#ground_stop_layer#}
         ],
         target: document.getElementById('map'),
         view: view
@@ -413,7 +375,6 @@
     $('input').change(function () {
         param_dic = get_boarders();
         console.log(param_dic);
-        param_dic['nat_class'] = document.getElementById('selected_nat_class').value;
         value = $(this).val();
         console.log(value);
         if (value === 'metros') {
@@ -436,21 +397,25 @@
             get_homes();
             document.getElementById("homes").disabled = false;
         }
-        if (value === 'lines') {
-            console.log(param_dic);
+        if (value === 'route') {
             if (document.getElementById(value).checked) {
-                document.getElementById("lines").disabled = true;
-                $.get(line_url, param_dic).then(function (response) {
-                    lines = response['lines'];
-                    console.log(lines);
-                    source = get_lines_source(lines);
+                document.getElementById("route").disabled = true;
+                let route_params = {}
+                route_params["lat_start"] = coords1[0]
+                route_params["lon_start"] = coords1[1]
+                route_params["lat_end"] = coords2[0]
+                route_params["lon_end"] = coords2[1]
+                $.get(route_url, route_params).then(function (response) {
+                    console.log(response)
+                    let route = response['route'];
+                    console.log(route)
+                    source = get_lines_source(route);
                     line_layer = get_line_layer(source);
                     console.log(line_layer);
                     map.addLayer(line_layer);
-                    document.getElementById("lines").disabled = false;
+                    document.getElementById("route").disabled = false;
                 })
             } else {
-                console.log('remove');
                 map.removeLayer(line_layer);
                 document.getElementById("selected_line_type").disabled = false;
             }
@@ -476,7 +441,6 @@
         get_sale_points()
         param_dic = get_boarders();
         param_dic['delete_all'] = false;
-        param_dic['nat_class'] = document.getElementById('selected_nat_class').value;
         if (document.getElementById("metros").checked) {
             $.get(metro_url, param_dic).then(function (response) {
                 var features = get_metro_features(response['metros']);

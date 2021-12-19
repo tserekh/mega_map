@@ -210,17 +210,18 @@ input[type=checkbox][name=homes] + label {
     background:url("/static/icons/home.png") no-repeat;
     background-size: 100%;
 }
+
+input[type=checkbox][name=route] + label {
+
+    background:url("/static/icons/route.png") no-repeat;
+    background-size: 100%;
+}
 input[type=checkbox][name=metros] + label {
 
     background:url("/static/map_icons/metro-moskva-logo.png") no-repeat;
     background-size: 100%;
 }
 
-input[type=checkbox][name=polygons] + label {
-
-    background:url("/static/icons/polygon.png") no-repeat;
-    background-size: 100%;
-}
 
 input[type=checkbox][name=ground_stops] + label {
 

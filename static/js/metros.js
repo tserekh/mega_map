@@ -1,4 +1,4 @@
-function compute_metro_style(feature, fill_color) {
+function compute_metro_style(feature) {
     return new ol.style.Style({
         image: new ol.style.Icon({
             radius: feature.get('radius'),
