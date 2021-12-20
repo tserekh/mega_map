@@ -21,54 +21,6 @@ function geocode_coords(search_address) {
     return coords
 }
 
-    function get_route() {
-        let address_from = document.getElementById("searchAddressFrom").value;
-        let address_to = document.getElementById("searchAddressTo").value;
-        param_dic = {}
-        param_dic['address_from'] = address_from
-        param_dic['address_to'] = address_to
-        $.get(route_url, param_dic).then(function (response) {
-        coords1 = geocode_coords(search_address1)
-        coords2 = geocode_coords(search_address2)
-        geom1 = new ol.geom.Point(coords1)
-        geom2 = new ol.geom.Point(coords2)
-        view.animate({
-            center: [(coords1[0] + coords2[0]) / 2, (coords1[1] + coords2[1]) / 2,],
-            duration: 500,
-            zoom: 15
-        })
-
-        document.getElementById("select_bar").style.display = "none";
-        document.getElementById("describe_bar").style.display = "block";
-        document.getElementById("bar").style.display = "block";
-        document.getElementById("describe").innerHTML = info_text;
-
-        feature = new ol.Feature({
-            'geometry': geom,
-            'info': info_text,
-            radius: 10,
-        });
-        features = [
-            ol.Feature({
-                'geometry': geom1,
-                'info': info_text,
-                radius: 10,
-            }),
-            ol.Feature({
-                'geometry': geom2,
-                'info': info_text,
-                radius: 10,
-            }),
-        ];
-        var source = new ol.source.Vector({
-            features: features,
-            wrapX: false,
-            style: compute_search_address_style
-        });
-        search_address_layer.setSource(source);
-    }
-
-
     function compute_search_address_style(feature) {
         var style_dic = {};
         style_dic['image'] = new ol.style.Icon({
@@ -82,4 +34,3 @@ function geocode_coords(search_address) {
         })
         return new ol.style.Style(style_dic);
     }
-

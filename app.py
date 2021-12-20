@@ -163,7 +163,9 @@ def get_homes():
 def get_route():
     if request.args.get("lat_start") is None:
         address_from = request.args.get("address_from")
+        print(address_from)
         address_to = request.args.get("address_to")
+        print(address_to)
         lat_start, lon_start = geocode(address_from)
         lat_end, lon_end = geocode(address_to)
     else:
