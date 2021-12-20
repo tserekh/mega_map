@@ -189,7 +189,7 @@ def get_route():
     return {
         "route": {
             "shortest_path_coords": list(
-                shortest_path_coords[["x", "y"]].T.to_dict().values()
+                map(list, shortest_path_coords[["x", "y"]].values)
             ),
             "short_route_names": short_route_names,
             "total_weight": total_weight,

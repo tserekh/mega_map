@@ -1,6 +1,6 @@
 
 function get_route_source(lines){
-	console.log(lines);
+    console.log(lines);
 	geojsonfeatures = lines.map(function(x){
 	list_of_coords1 = x['line'];
 		return {
@@ -54,39 +54,40 @@ function get_route_layer(line_source){
                 shortest_path_coords = response['route']["shortest_path_coords"];
                 short_route_names = response['route']["short_route_names"];
                 total_weight = response['route']["total_weight"];
-                coords1 = response['route']["start_coords_xy"];
-                coords2 = response['route']["end_coords_xy"];
-                geom1 = new ol.geom.Point(coords1)
-                geom2 = new ol.geom.Point(coords2)
-                view.animate({
-                    center: [(coords1[0] + coords2[0]) / 2, (coords1[1] + coords2[1]) / 2,],
-                    duration: 500,
-                    zoom: 15
-                })
+                // coords1 = response['route']["start_coords_xy"];
+                // coords2 = response['route']["end_coords_xy"];
+                // geom1 = new ol.geom.Point(coords1)
+                // console.log(coords1)
+                // geom2 = new ol.geom.Point(coords2)
+                // console.log(coords2)
+                // view.animate({
+                //     center: [(coords1[0] + coords2[0]) / 2, (coords1[1] + coords2[1]) / 2,],
+                //     duration: 500,
+                //     zoom: 15
+                // })
+                //
+                // feature1 = ol.Feature({
+                //         'geometry': geom1,
+                //         'info': 'no info',
+                //         radius: 10,
+                //     })
+                // feature2 = ol.Feature({
+                //         'geometry': geom2,
+                //         'info': 'no info',
+                //         radius: 10,
+                //     })
 
-                features = [
-                    ol.Feature({
-                        'geometry': geom1,
-                        // 'info': info_text,
-                        radius: 10,
-                    }),
-                    ol.Feature({
-                        'geometry': geom2,
-                        // 'info': info_text,
-                        radius: 10,
-                    }),
-                ];
-                var point_source = new ol.source.Vector({
-                    features: features,
-                    wrapX: false,
-                    style: compute_search_address_style
-                });
+                // var point_source = new ol.source.Vector({
+                //     features: features,
+                //     wrapX: false,
+                //     style: compute_search_address_style
+                // });
 
                 lines_source = get_route_source(shortest_path_coords)
 				line_layer = get_route_layer(lines_source)
                 map.addLayer(line_layer);
-                route_points_layer = get_route_points_layer(point_source)
-                map.addLayer(route_points_layer);
+                // route_points_layer = get_route_points_layer(point_source)
+                // map.addLayer(route_points_layer);
             }
         )
     }
