@@ -395,7 +395,6 @@
             get_homes();
             document.getElementById("homes").disabled = false;
         }
-        update_route();
         if (document.getElementById("ground_stops").checked) {
             document.getElementById("ground_stops").disabled = true;
             $.get(ground_stop_url, param_dic).then(function (response) {
