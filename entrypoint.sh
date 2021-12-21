@@ -3,4 +3,4 @@ flask db init
 flask db migrate
 flask db upgrade
 python data_to_db.py
-gunicorn --bind 0.0.0.0:"$PORT" app
+gunicorn --bind 0.0.0.0:"$PORT" application
