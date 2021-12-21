@@ -25,12 +25,14 @@ db = SQLAlchemy(application)
 migrate = Migrate(application, db)
 
 logging.info("Start initializing graph")
-df_stops_for_routing = get_stops_for_routing(con)
-df = get_graph_data(con)
-G = build_graph(df)
-logging.info("Initializing graph complete")
-# logging.error('Something wrong with global variables')
-# logging.info('All ok with global variables')
+try:
+    df_stops_for_routing = get_stops_for_routing(con)
+    df = get_graph_data(con)
+    G = build_graph(df)
+    logging.info("Initializing graph complete")
+except:
+    logging.error("Something wrong with global variables")
+logging.info("All ok with global variables")
 
 
 class AbstractClass:
@@ -185,12 +187,15 @@ def get_route():
     short_route_names = list(
         map(lambda x: x.split("__")[-1], shortest_path_nodes[1:-1])
     )
-
+    shortest_path_coords = (
+        [start_coords_xy]
+        + list(map(list, shortest_path_coords[["x", "y"]].values))
+        + [end_coords_xy]
+    )
+    short_route_names = ["start_point"] + short_route_names + ["end_point"]
     return {
         "route": {
-            "shortest_path_coords": list(
-                map(list, shortest_path_coords[["x", "y"]].values)
-            ),
+            "shortest_path_coords": shortest_path_coords,
             "short_route_names": short_route_names,
             "total_weight": total_weight,
             "start_coords_xy": start_coords_xy,

@@ -32,12 +32,10 @@ function perc2rg(perc) {
     return [r, g, b];
 }
 
-function compute_line_style(feature) {
-    perc = feature.get('weight') / max_weight;
-    perc = Math.min(1, perc);
+function compute_route_style(feature) {
     linestyle = new ol.style.Style({
         stroke: new ol.style.Stroke({
-            color: perc2rg(perc),
+            color: 'blue',
             width: 3,
             opacity: 0.5,
         }),
@@ -85,14 +83,14 @@ function get_lines_source(lines) {
     });
     return line_source;
 }
-
-function get_line_layer(line_source) {
-    var line_layer = new ol.layer.Vector({
-        source: line_source,
-        style: compute_line_style
-    });
-    return line_layer;
-}
+//
+// function get_line_layer(line_source) {
+//     var line_layer = new ol.layer.Vector({
+//         source: line_source,
+//         style: compute_line_style
+//     });
+//     return line_layer;
+// }
 
 function get_metro_features(data) {
     var features = [];

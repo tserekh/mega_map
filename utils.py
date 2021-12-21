@@ -32,7 +32,6 @@ def get_clusters(df, n_clusters, agg, mode):
             delta_x = df["x"].max() - df["x"].min()
             delta_y = df["y"].max() - df["y"].min()
             square_side = (delta_x * delta_y / n_clusters) ** 0.5
-            # print(df)
             df["x_round"] = df["x"].apply(
                 lambda x: square_side * round(x / square_side)
             )

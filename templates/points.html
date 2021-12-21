@@ -255,8 +255,6 @@
         return new ol.style.Style(style_dic);
     }
 
-
-
     var center_coord = [37.622504, 55.753215];
     center_coord = ol.proj.fromLonLat(center_coord);
 
@@ -313,13 +311,12 @@
         return boarders_dic
     }
 
-
     $('input').change(function () {
         param_dic = get_boarders();
         console.log(param_dic);
         value = $(this).val();
         console.log(value);
-        get_route();
+        {#get_route();#}
         if (value === 'metros') {
             if (document.getElementById(value).checked) {
                 document.getElementById("metros").disabled = true;
@@ -339,26 +336,6 @@
         if (value === 'homes') {
             get_homes();
             document.getElementById("homes").disabled = false;
-        }
-        if (value === 'route') {
-            if (document.getElementById(value).checked) {
-                document.getElementById("route").disabled = true;
-                route_params = {}
-                route_params["address_from"] =  document.getElementById("searchAddressFrom").value
-                route_params["address_to"] = document.getElementById("searchAddressTo").value
-
-                $.get(route_url, route_params).then(function (response) {
-                    let route = response['route'];
-                    source = get_route_source(route);
-                    route_layer = get_route_layer(source);
-                    console.log(route_layer);
-                    map.addLayer(route_layer);
-                    document.getElementById("route").disabled = false;
-                })
-            } else {
-                {#map.removeLayer(route_layer);#}
-                document.getElementById("route").disabled = false;
-            }
         }
         if (value === 'ground_stops') {
             if (document.getElementById(value).checked) {

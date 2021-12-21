@@ -55,9 +55,7 @@ def get_potentilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
     df_end_stop["dist"] = dists[1]
     df_start_stop["time"] = df_start_stop["dist"] / speed_met_in_min
     df_end_stop["time"] = df_end_stop["dist"] / speed_met_in_min
-    print(df)
-    print()
-    print(df_start_stop)
+
     df_potential_start = pd.merge(
         df[["stop_id", "route_short_name", "stop_id__route_short_name"]],
         df_start_stop[["stop_id", "time"]],

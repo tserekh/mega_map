@@ -14,7 +14,6 @@ def geocode(address: str) -> Union[None, Tuple[float, float]]:
     )
     geocode_url = geocode_url_pattern + address
     response = json.loads(requests.get(geocode_url).content)
-    print(response)
     GeoObjectCollection = response["response"]["GeoObjectCollection"]
     if (
         GeoObjectCollection["metaDataProperty"]["GeocoderResponseMetaData"]["found"]
