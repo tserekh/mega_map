@@ -42,7 +42,8 @@ class BusStops(db.Model, AbstractClass):
 
 
 class Graph(db.Model):
-    stop_id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True)
+    stop_id = db.Column(db.Integer())
     stop_sequence = db.Column(db.Integer())
     route_id = db.Column(db.Integer())
     service_id = db.Column(db.Integer())
