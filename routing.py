@@ -20,13 +20,13 @@ def get_graph_data(con):
 
 def build_graph(df):
 
-    df_route_graph = df[df["route_short_name__next"] == df["route_short_name"]]
+    df_route_graph = df[df["using_trip_id__next"] == df["using_trip_id"]]
     df_transfer = (
-        df.groupby("stop_id").agg({"stop_id__route_short_name": list}).reset_index()
+        df.groupby("stop_id").agg({"stop_id__using_trip_id": list}).reset_index()
     )
-    df_transfer = df_transfer[df_transfer["stop_id__route_short_name"].apply(len) > 1]
+    df_transfer = df_transfer[df_transfer["stop_id__using_trip_id"].apply(len) > 1]
     transfer_list = list(
-        map(lambda x: tuple(x), df_transfer["stop_id__route_short_name"].values)
+        map(lambda x: tuple(x), df_transfer["stop_id__using_trip_id"].values)
     )
 
     transfer_nodes = reduce(lambda x, y: x + y, (map(get_pairs, transfer_list)))
@@ -37,7 +37,7 @@ def build_graph(df):
     G = nx.DiGraph()
     G.add_weighted_edges_from(
         df_route_graph[
-            ["stop_id__route_short_name", "stop_id__route_short_name__next", "time"]
+            ["stop_id__using_trip_id", "stop_id__using_trip_id__next", "time"]
         ].values
     )
     G.add_weighted_edges_from(transfer_nodes)
@@ -57,12 +57,12 @@ def get_potentilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
     df_end_stop["time"] = df_end_stop["dist"] / speed_met_in_min
 
     df_potential_start = pd.merge(
-        df[["stop_id", "route_short_name", "stop_id__route_short_name"]],
+        df[["stop_id", "using_trip_id", "stop_id__using_trip_id"]],
         df_start_stop[["stop_id", "time"]],
         on="stop_id",
     )
     df_potential_end = pd.merge(
-        df[["stop_id", "route_short_name", "stop_id__route_short_name"]],
+        df[["stop_id", "using_trip_id", "stop_id__using_trip_id"]],
         df_end_stop[["stop_id", "time"]],
         on="stop_id",
     )
@@ -71,11 +71,9 @@ def get_potentilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
     df_potential_end["end_point"] = "end_point"
 
     df_potential_start = df_potential_start[
-        ["start_point", "stop_id__route_short_name", "time"]
+        ["start_point", "stop_id__using_trip_id", "time"]
     ]
-    df_potential_end = df_potential_end[
-        ["stop_id__route_short_name", "end_point", "time"]
-    ]
+    df_potential_end = df_potential_end[["stop_id__using_trip_id", "end_point", "time"]]
     return df_potential_start, df_potential_end
 
 

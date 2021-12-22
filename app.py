@@ -1,11 +1,9 @@
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-
 from sqlalchemy import create_engine
 
 from config import SQLALCHEMY_DATABASE_URI
-
 
 application = Flask(__name__)
 application.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
@@ -14,6 +12,7 @@ con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
 
 db = SQLAlchemy(application)
 migrate = Migrate(application, db)
+
 
 class AbstractClass:
     id = db.Column(db.Integer, primary_key=True)
@@ -42,14 +41,13 @@ class BusStops(db.Model, AbstractClass):
     stop_name = db.Column(db.Text())
 
 
-class Graph(db.Model, AbstractClass):
-    trip_id = db.Column(db.Text())
-    stop_id = db.Column(db.Integer())
+class Graph(db.Model):
+    stop_id = db.Column(db.Integer(), primary_key=True)
     stop_sequence = db.Column(db.Integer())
     route_id = db.Column(db.Integer())
     service_id = db.Column(db.Integer())
-    route_short_name = db.Column(db.Text())
-    route_short_name__next = db.Column(db.Text())
-    stop_id__route_short_name = db.Column(db.Text())
-    stop_id__route_short_name__next = db.Column(db.Text())
+    using_trip_id = db.Column(db.Text())
+    using_trip_id__next = db.Column(db.Text())
+    stop_id__using_trip_id = db.Column(db.Text())
+    stop_id__using_trip_id__next = db.Column(db.Text())
     time = db.Column(db.Float())
