@@ -47,7 +47,7 @@ def build_graph(df):
 def get_potentilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
     speed_met_in_min = 66
     tree = KDTree(df_stop[["x", "y"]], leaf_size=40)
-    dists, inds = tree.query([start_coords_xy, end_coords_xy], k=10)
+    dists, inds = tree.query([start_coords_xy, end_coords_xy], k=50)
     df_start_stop = df_stop.iloc[inds[0]].copy()
     df_end_stop = df_stop.iloc[inds[1]].copy()
 
