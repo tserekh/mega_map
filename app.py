@@ -52,3 +52,8 @@ class Graph(db.Model):
     stop_id__using_trip_id = db.Column(db.Text())
     stop_id__using_trip_id__next = db.Column(db.Text())
     time = db.Column(db.Float())
+
+
+class TripShort(db.Model):
+    route_id = db.Column(db.Text(), primary_key=True, index=True)
+    route_short_name = db.Column(db.Text())

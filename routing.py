@@ -18,34 +18,43 @@ def get_graph_data(con):
     return pd.read_sql("select * from public.graph", con)
 
 
-def build_graph(df):
+def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.DiGraph:
+    df_route_graph = df[df['using_trip_id__next'] == df['using_trip_id']]
 
-    df_route_graph = df[df["using_trip_id__next"] == df["using_trip_id"]]
-    df_transfer = (
-        df.groupby("stop_id").agg({"stop_id__using_trip_id": list}).reset_index()
-    )
-    df_transfer = df_transfer[df_transfer["stop_id__using_trip_id"].apply(len) > 1]
-    transfer_list = list(
-        map(lambda x: tuple(x), df_transfer["stop_id__using_trip_id"].values)
-    )
+    df_transfers_to_stop = df.groupby('stop_id').agg({'stop_id__using_trip_id': list})
 
-    transfer_nodes = reduce(lambda x, y: x + y, (map(get_pairs, transfer_list)))
-    transfer_nodes = list(map(lambda x: (x[0], x[1], 5), transfer_nodes)) + list(
-        map(lambda x: (x[1], x[0], 5), transfer_nodes)
-    )
+    only_one_trip_stops = df_transfers_to_stop[df_transfers_to_stop['stop_id__using_trip_id'].apply(len) == 1][
+        'stop_id__using_trip_id'].index
+
+    transfer_nodes = df[df['stop_id'].isin(only_one_trip_stops)][['stop_id__using_trip_id', 'stop_id']].values
+    transfer_nodes['time'] = 1.5
 
     G = nx.DiGraph()
-    G.add_weighted_edges_from(
-        df_route_graph[
-            ["stop_id__using_trip_id", "stop_id__using_trip_id__next", "time"]
-        ].values
-    )
-    G.add_weighted_edges_from(transfer_nodes)
+    G.add_weighted_edges_from(df_route_graph[['stop_id__using_trip_id', 'stop_id__using_trip_id__next', 'time']].values)
+    G.add_weighted_edges_from(transfer_nodes[['stop_id__using_trip_id', 'stop_id', 'time']])
+    G.add_weighted_edges_from(transfer_nodes[['stop_id', 'stop_id__using_trip_id', 'time']])
+
+    stop_stop_nodes = pd.DataFrame()
+    k = 5
+    for j in range(1, k):
+        tree = KDTree(df_stop[["x", "y"]], leaf_size=40)
+        dists, inds = tree.query(df_stop[["x", "y"]], k=k)
+
+        df_stop['stop_id_2'] = df_stop.iloc[inds[:, j]]['stop_id'].values
+        df_stop['dist'] = dists[:, j]
+
+        stop_stop_nodes = stop_stop_nodes.append(df_stop[['stop_id', 'stop_id_2', 'dist']])
+        stop_stop_nodes['time'] = stop_stop_nodes['dist'] / 118.0
+
+    G.add_weighted_edges_from(stop_stop_nodes[['stop_id', 'stop_id_2', 'time']])
+    G.add_weighted_edges_from(stop_stop_nodes[['stop_id_2', 'stop_id', 'time']])
+
     return G
 
 
-def get_potentilal_start_and_end(df, df_stop, start_coords_xy, end_coords_xy):
-    speed_met_in_min = 66
+def get_potential_start_and_end(df :pd.DataFrame, df_stop :pd.DataFrame, start_coords_xy: (float, float),
+                                end_coords_xy: (float, float)) -> (pd.DataFrame, pd.DataFrame):
+    speed_met_in_min = 118
     tree = KDTree(df_stop[["x", "y"]], leaf_size=40)
     dists, inds = tree.query([start_coords_xy, end_coords_xy], k=50)
     df_start_stop = df_stop.iloc[inds[0]].copy()
@@ -87,7 +96,7 @@ def get_stops_for_routing(con):
     )
 
 
-def get_route(G, df_stop):
+def get_route(G: nx.classes.digraph.DiGraph, df_stop: pd.DataFrame):
     shortest_path_nodes = nx.shortest_path(
         G, "start_point", "end_point", weight="weight"
     )
@@ -110,7 +119,7 @@ def get_pretty_route(G, df, df_stop, lat_start, lon_start, lat_end, lon_end):
     start_coords_xy = transformer.transform(lat_start, lon_start)
     end_coords_xy = transformer.transform(lat_end, lon_end)
 
-    df_potential_start, df_potential_end = get_potentilal_start_and_end(
+    df_potential_start, df_potential_end = get_potential_start_and_end(
         df, df_stop, start_coords_xy, end_coords_xy
     )
     G.add_weighted_edges_from(df_potential_start.values)

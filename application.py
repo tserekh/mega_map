@@ -22,7 +22,7 @@ con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
 logging.info("Start initializing graph")
 df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
-G = build_graph(df)
+G = build_graph(df, df_stops_for_routing)
 
 logging.info("All ok with global variables")
 
