@@ -26,13 +26,13 @@ def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.D
     only_one_trip_stops = df_transfers_to_stop[df_transfers_to_stop['stop_id__using_trip_id'].apply(len) == 1][
         'stop_id__using_trip_id'].index
 
-    transfer_nodes = df[df['stop_id'].isin(only_one_trip_stops)][['stop_id__using_trip_id', 'stop_id']].values
+    transfer_nodes = df[df['stop_id'].isin(only_one_trip_stops)][['stop_id__using_trip_id', 'stop_id']]
     transfer_nodes['time'] = 1.5
 
     G = nx.DiGraph()
     G.add_weighted_edges_from(df_route_graph[['stop_id__using_trip_id', 'stop_id__using_trip_id__next', 'time']].values)
-    G.add_weighted_edges_from(transfer_nodes[['stop_id__using_trip_id', 'stop_id', 'time']])
-    G.add_weighted_edges_from(transfer_nodes[['stop_id', 'stop_id__using_trip_id', 'time']])
+    G.add_weighted_edges_from(transfer_nodes[['stop_id__using_trip_id', 'stop_id', 'time']].values)
+    G.add_weighted_edges_from(transfer_nodes[['stop_id', 'stop_id__using_trip_id', 'time']].values)
 
     stop_stop_nodes = pd.DataFrame()
     k = 5
