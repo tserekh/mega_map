@@ -117,9 +117,7 @@ def get_homes():
 def get_route():
     if request.args.get("lat_start") is None:
         address_from = request.args.get("address_from")
-        print(address_from)
         address_to = request.args.get("address_to")
-        print(address_to)
         lat_start, lon_start = geocode(address_from)
         lat_end, lon_end = geocode(address_to)
     else:
@@ -127,7 +125,7 @@ def get_route():
         lon_start = float(request.args.get("lon_start"))
         lat_end = float(request.args.get("lat_end"))
         lon_end = float(request.args.get("lon_end"))
-    shortest_path_coords, shortest_path_nodes, total_weight = get_pretty_route(
+    shortest_path_coords, pretty_nodes, total_weight = get_pretty_route(
         G,
         df,
         df_stops_for_routing,
@@ -143,11 +141,14 @@ def get_route():
 
     start_coords_xy = transformer.transform(lat_start, lon_start)
     end_coords_xy = transformer.transform(lat_end, lon_end)
-    short_route_names = list(
-        map(lambda x: x.split("__")[-1], shortest_path_nodes[1:-1])
-    )
+    short_route_names = list(map(lambda x: x.split("__")[-1], pretty_nodes[1:-1]))
     shortest_path_coords = [start_coords_xy] + shortest_path_coords + [end_coords_xy]
     short_route_names = ["start_point"] + short_route_names + ["end_point"]
+
+    vc = pd.Series(pretty_nodes).value_counts()
+    html_info = pd.DataFrame(
+        vc.loc[list(pd.Series(pretty_nodes).drop_duplicates().values)]
+    ).to_html()
     return {
         "route": {
             "shortest_path_coords": shortest_path_coords,
@@ -155,6 +156,7 @@ def get_route():
             "total_weight": total_weight,
             "start_coords_xy": start_coords_xy,
             "end_coords_xy": end_coords_xy,
+            "info": html_info,
         }
     }
 

@@ -1,4 +1,4 @@
-function get_route_source(lines,  short_route_names, total_weight){
+function get_route_source(lines,  short_route_names, total_weight, info){
     console.log(lines);
 
 		geojsonObject = {
@@ -13,7 +13,7 @@ function get_route_source(lines,  short_route_names, total_weight){
 					{
 						"type": "Feature",
 						"properties": {
-							'info': Math.round(total_weight).toString() + "<br>" + short_route_names,
+							'info': Math.round(total_weight).toString() + "<br>" + info,
 
 						},
 						"geometry": {
@@ -57,8 +57,9 @@ function get_route_layer(line_source){
                 shortest_path_coords = response['route']["shortest_path_coords"];
                 short_route_names = response['route']["short_route_names"];
                 total_weight = response['route']["total_weight"];
+                info = response['route']["info"];
 
-                lines_source = get_route_source(shortest_path_coords, short_route_names, total_weight)
+                lines_source = get_route_source(shortest_path_coords, short_route_names, total_weight, info)
 				line_layer = get_route_layer(lines_source)
                 map.addLayer(line_layer);
                 // route_points_layer = get_route_points_layer(point_source)

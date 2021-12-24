@@ -47,7 +47,7 @@ def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.D
     )
 
     stop_stop_nodes = pd.DataFrame()
-    k = 5
+    k = 20
     for j in range(1, k):
         tree = KDTree(df_stop[["x", "y"]], leaf_size=40)
         dists, inds = tree.query(df_stop[["x", "y"]], k=k)
@@ -142,6 +142,7 @@ def get_route(
             df_stop[df_stop["stop_id"] == int(float(stop_id))][["x", "y"]].iloc[0]
         )
         xy_list.append(stop_xy)
+    print(pretty_nodes)
     return xy_list, pretty_nodes, weight
 
 
