@@ -60,8 +60,8 @@ def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.D
         )
         stop_stop_nodes["time"] = stop_stop_nodes["dist"] / 118.0
 
-    G.add_weighted_edges_from(stop_stop_nodes[["stop_id", "stop_id_2", "time"]])
-    G.add_weighted_edges_from(stop_stop_nodes[["stop_id_2", "stop_id", "time"]])
+    G.add_weighted_edges_from(stop_stop_nodes[["stop_id", "stop_id_2", "time"]].values)
+    G.add_weighted_edges_from(stop_stop_nodes[["stop_id_2", "stop_id", "time"]].values)
 
     return G
 
@@ -126,18 +126,21 @@ def get_route(
 
     pretty_nodes = []
     xy_list = []
-    for node in shortest_path_nodes:
-        if "__" in node:
+    for node in shortest_path_nodes[1:-1]:
+        if "__" in str(node):
             trip_id = node.split("__")[-1]
             stop_id = node.split("__")[0]
             short_name = df_trip_id__short_name[
                 df_trip_id__short_name["trip_id"] == trip_id
-            ]["route_short_name"].iloc[0]
+            ]["short_name"].iloc[0]
             pretty_nodes.append(short_name)
         else:
-            stop_id = node
+            stop_id = str(node)
             pretty_nodes.append(stop_id)
-        stop_xy = list(df_stop[df_stop["stop_id"] == stop_id][["x", "y"]].iloc[0])
+
+        stop_xy = list(
+            df_stop[df_stop["stop_id"] == int(float(stop_id))][["x", "y"]].iloc[0]
+        )
         xy_list.append(stop_xy)
     return xy_list, pretty_nodes, weight
 

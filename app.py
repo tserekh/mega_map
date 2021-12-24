@@ -55,5 +55,5 @@ class Graph(db.Model):
 
 
 class TripShort(db.Model):
-    route_id = db.Column(db.Text(), primary_key=True, index=True)
-    route_short_name = db.Column(db.Text())
+    trip_id = db.Column(db.Text(), primary_key=True, index=True)
+    short_name = db.Column(db.Text())

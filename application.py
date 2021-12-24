@@ -146,11 +146,7 @@ def get_route():
     short_route_names = list(
         map(lambda x: x.split("__")[-1], shortest_path_nodes[1:-1])
     )
-    shortest_path_coords = (
-        [start_coords_xy]
-        + list(map(list, shortest_path_coords[["x", "y"]].values))
-        + [end_coords_xy]
-    )
+    shortest_path_coords = [start_coords_xy] + shortest_path_coords + [end_coords_xy]
     short_route_names = ["start_point"] + short_route_names + ["end_point"]
     return {
         "route": {

@@ -21,3 +21,8 @@ df.to_sql("bus_stops", con, "public", if_exists="append", index=False)
 df = pd.read_csv("external_data/graph.csv", sep=";")
 con.execute("delete from public.graph")
 df.to_sql("graph", con, "public", if_exists="append", index=False)
+
+
+df = pd.read_csv("external_data/trip_short.csv", sep=";")
+con.execute("delete from public.trip_short")
+df.to_sql("trip_short", con, "public", if_exists="append", index=False)
