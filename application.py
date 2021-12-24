@@ -10,21 +10,22 @@ from pyproj import Transformer
 from sqlalchemy import create_engine
 
 import config
+from app import application
 from config import SQLALCHEMY_DATABASE_URI
 from geocode import geocode
 from routing import (build_graph, get_graph_data, get_pretty_route,
-                     get_stops_for_routing)
+                     get_stops_for_routing, get_trip_short)
 from utils import get_clusters
-
-from app import application
 
 con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
 logging.info("Start initializing graph")
 df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
+df_trip_id__short_name = get_trip_short(con)
 G = build_graph(df, df_stops_for_routing)
 
 logging.info("All ok with global variables")
+
 
 @application.route("/", methods=["POST", "GET"])
 def show_map():
@@ -127,7 +128,14 @@ def get_route():
         lat_end = float(request.args.get("lat_end"))
         lon_end = float(request.args.get("lon_end"))
     shortest_path_coords, shortest_path_nodes, total_weight = get_pretty_route(
-        G, df, df_stops_for_routing, lat_start, lon_start, lat_end, lon_end
+        G,
+        df,
+        df_stops_for_routing,
+        df_trip_id__short_name,
+        lat_start,
+        lon_start,
+        lat_end,
+        lon_end,
     )
     G.remove_node("start_point")
     G.remove_node("end_point")
