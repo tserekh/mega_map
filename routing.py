@@ -130,9 +130,13 @@ def get_route(
         if "__" in str(node):
             trip_id = node.split("__")[-1]
             stop_id = node.split("__")[0]
-            short_name = df_trip_id__short_name[
+            trip_df =  df_trip_id__short_name[
                 df_trip_id__short_name["trip_id"] == trip_id
-            ]["short_name"].iloc[0]
+            ]
+            if len(trip_df)>0:
+                short_name =trip_df["short_name"].iloc[0]
+            else:
+                short_name = trip_id
             pretty_nodes.append(short_name)
         else:
             stop_id = str(node)

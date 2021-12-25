@@ -2,16 +2,14 @@ import glob
 import logging
 
 import pandas as pd
-from flask import Flask, g, render_template, request
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
+from flask import render_template, request
+
 from PIL import Image
 from pyproj import Transformer
 from sqlalchemy import create_engine
 
 import config
 from app import application
-from config import SQLALCHEMY_DATABASE_URI
 from geocode import geocode
 from routing import (build_graph, get_graph_data, get_pretty_route,
                      get_stops_for_routing, get_trip_short)
