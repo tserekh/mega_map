@@ -3,7 +3,7 @@ import os
 prod = True
 if prod:
     # SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'].replace("postgres://", "postgresql://")
-    SQLALCHEMY_DATABASE_URI = os.environ["HEROKU_POSTGRESQL_CYAN_URL"].replace(
+    SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"].replace(
         "postgres://", "postgresql://"
     )
 
