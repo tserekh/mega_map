@@ -133,6 +133,7 @@ def get_route(
             trip_df = df_trip_id__short_name[
                 df_trip_id__short_name["trip_id"] == trip_id
             ]
+            print(trip_df)
             if len(trip_df) > 0:
                 short_name = trip_df["short_name"].iloc[0]
             else:
