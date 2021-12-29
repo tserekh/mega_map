@@ -1,6 +1,6 @@
 import os
 
-prod = True
+prod = False
 if prod:
     # SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'].replace("postgres://", "postgresql://")
     SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"].replace(

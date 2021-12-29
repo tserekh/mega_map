@@ -21,7 +21,7 @@ df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
 df_trip_id__short_name = get_trip_short(con)
 G = build_graph(df, df_stops_for_routing)
-
+del df
 logging.info("All ok with global variables")
 
 
@@ -125,7 +125,6 @@ def get_route():
         lon_end = float(request.args.get("lon_end"))
     shortest_path_coords, pretty_nodes, total_weight = get_pretty_route(
         G,
-        df,
         df_stops_for_routing,
         df_trip_id__short_name,
         lat_start,
