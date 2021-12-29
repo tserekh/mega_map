@@ -26,6 +26,7 @@ def get_graph_data(con):
 
 
 def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.DiGraph:
+    speed_met_in_min = 118.0/3
     df_route_graph = df[df["using_trip_id__next"] == df["using_trip_id"]]
     df_transfers_to_stop = df.groupby("stop_id").agg({"stop_id__using_trip_id": list})
     only_one_trip_stops = df_transfers_to_stop[
@@ -62,11 +63,7 @@ def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.D
         stop_stop_nodes = stop_stop_nodes.append(
             df_stop[["stop_id", "stop_id_2", "dist"]]
         )
-        stop_stop_nodes["time"] = stop_stop_nodes["dist"] / 118.0
-    print()
-    print('stop_stop_nodes')
-    print(stop_stop_nodes.shape)
-    print(stop_stop_nodes[["stop_id", "stop_id_2", "time"]].drop_duplicates().shape)
+        stop_stop_nodes["time"] = stop_stop_nodes["dist"] / speed_met_in_min
     G.add_weighted_edges_from(stop_stop_nodes[["stop_id", "stop_id_2", "time"]].values)
     G.add_weighted_edges_from(stop_stop_nodes[["stop_id_2", "stop_id", "time"]].values)
 
@@ -78,7 +75,7 @@ def get_potential_start_and_end(
     start_coords_xy: (float, float),
     end_coords_xy: (float, float),
 ) -> (pd.DataFrame, pd.DataFrame):
-    speed_met_in_min = 118
+    speed_met_in_min = 118/3
     tree = KDTree(df_stop[["x", "y"]], leaf_size=50)
     dists, inds = tree.query([start_coords_xy, end_coords_xy], k=50)
     df_start_stop = df_stop.iloc[inds[0]].copy()
