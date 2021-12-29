@@ -21,7 +21,6 @@ df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
 df_trip_id__short_name = get_trip_short(con)
 G = build_graph(df, df_stops_for_routing)
-del df
 
 logging.info("All ok with global variables")
 
