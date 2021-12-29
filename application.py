@@ -113,6 +113,7 @@ def get_homes():
 
 @application.route("/get_route", methods=["GET"])
 def get_route():
+    print(G.number_of_nodes())
     if request.args.get("lat_start") is None:
         address_from = request.args.get("address_from")
         address_to = request.args.get("address_to")
