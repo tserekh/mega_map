@@ -4,8 +4,8 @@ function get_homes() {
         document.getElementById("homes").disabled = true;
         $.get(home_url, param_dic).then(function (response) {
                 console.log("Success!");
-                var features = get_home_features(response['homes']);
-                var source = new ol.source.Vector({
+            let features = get_home_features(response['homes']);
+            let source = new ol.source.Vector({
                     features: features,
                     wrapX: false
                 });

@@ -19,20 +19,7 @@ function nFormatter(num, digits) {
 }
 
 
-function perc2rg(perc) {
-    perc = 100 * (1 - perc);
-    var r, g, b = 0;
-    if (perc < 50) {
-        r = 255;
-        g = Math.round(5.1 * perc);
-    } else {
-        g = 255;
-        r = Math.round(510 - 5.10 * perc);
-    }
-    return [r, g, b];
-}
-
-function compute_route_style(feature) {
+function compute_route_style() {
     linestyle = new ol.style.Style({
         stroke: new ol.style.Stroke({
             color: 'blue',
@@ -42,55 +29,6 @@ function compute_route_style(feature) {
     })
     return linestyle
 }
-
-function get_lines_source(lines) {
-    console.log(lines);
-    geojsonfeatures = lines.map(function (x) {
-        list_of_coords1 = x['line'];
-        return {
-            'type': 'Feature',
-            'geometry': {
-                'type': 'LineString',
-                'coordinates': list_of_coords1.map(function (x) {
-                    return ol.proj.fromLonLat(x)
-                })
-            },
-
-            "properties": {
-                "name": 'sdsd',
-                'info': 'Домашний трафик от метро: ' + Math.round(2.7 * x['weight']).toString(),
-                'weight': x['weight']
-            },
-        };
-    });
-    console.log(geojsonfeatures[0]);
-
-    var geojsonObject = {
-        'type': 'FeatureCollection',
-        'crs': {
-            'type': 'name',
-            'properties': {
-                'name': 'EPSG:3857'
-            }
-        },
-        'features': geojsonfeatures
-    };
-
-    features = (new ol.format.GeoJSON()).readFeatures(geojsonObject);
-
-    var line_source = new ol.source.Vector({
-        features: features
-    });
-    return line_source;
-}
-//
-// function get_line_layer(line_source) {
-//     var line_layer = new ol.layer.Vector({
-//         source: line_source,
-//         style: compute_line_style
-//     });
-//     return line_layer;
-// }
 
 function get_metro_features(data) {
     var features = [];
@@ -120,10 +58,9 @@ function get_metro_layer(features) {
     });
 
 
-    var vector = new ol.layer.Vector({
+    return new ol.layer.Vector({
         source: vectorSource,
     });
-    return vector;
 }
 
  function compute_oper_square_style(feature) {

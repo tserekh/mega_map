@@ -398,5 +398,3 @@ input[type=checkbox][id=brand_map] + label {
 	font-size:24px;
 }
 
-div [class=ol-attribution ol-unselectable ol-control]
-{visibility: hidden;}
