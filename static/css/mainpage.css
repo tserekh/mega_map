@@ -111,18 +111,6 @@ div[id=selected_chain_name_container]
 	border-radius: 8px;
 }
 
-.curtail_bar {
-	z-index: 1;
-		border: none;
-    position: absolute;
-	left:309px;
-	top:40px;
-	background-image: url( "/static/map_icons/angle-pointing-to-top.png" );
-    background-size: 20px 20px;
-    height: 20px;
-    width: 20px;
-	background-color: white;
-}
 
 .back_button {
 	z-index: 1;

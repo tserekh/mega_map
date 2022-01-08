@@ -11,16 +11,13 @@
             type="module"></script>
     <title>Clustered Features</title>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/mainpage.css') }}">
-    <script src="{{ url_for('static',filename='js/sale_points.js') }}"></script>
     <script src="{{ url_for('static',filename='js/metros.js') }}"></script>
     <script src="{{ url_for('static',filename='js/homes.js') }}"></script>
-    <script src="{{ url_for('static',filename='js/search.js') }}"></script>
     <script src="{{ url_for('static',filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static',filename='js/route_points.js') }}"></script>
-{#    <script data-require="jquery@2.0.3" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>#}
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 </head>
 <body>
@@ -35,9 +32,6 @@
     <span>
 			<button class='search_address_button' id='search_address_button' onclick="update_route()"></button>
 		</span>
-    <div>
-        <button class='curtail_bar' type="button" id='curtail_bar' onclick="curtail_bar()"></button>
-    </div>
 </div>
 <div id='bar_container'>
     <div id='bar'>
@@ -50,7 +44,6 @@
                 <input type="checkbox" name="metros" value="metros" id="metros">
                 <label id='metros_label' for="metros"></label>
                 <input type="checkbox" name="route" value="route" id="route">
-                <label id='route_label' for="route"></label>
             </div>
 
         </div>
@@ -63,8 +56,6 @@
 
         </div>
     </div>
-
-
 </div>
 
 
@@ -355,13 +346,12 @@
     });
     document.getElementsByClassName("ol-attribution")[0].style.display = 'none'
     map.on('moveend', function () {
-        get_sale_points()
         param_dic = get_boarders();
         param_dic['delete_all'] = false;
         if (document.getElementById("metros").checked) {
             $.get(metro_url, param_dic).then(function (response) {
                 var features = get_metro_features(response['metros']);
-                source = new ol.source.Vector({
+                var source = new ol.source.Vector({
                     features: features,
                     wrapX: false
                 });
@@ -389,19 +379,19 @@
 
     map.on('click', function (evt) {
         var feature = map.forEachFeatureAtPixel(evt.pixel,
-            function (feature) {
-                console.log('click event');
-                console.log(feature.get('info'));
-                info = feature.get('info');
-                if (feature.get('info') === undefined) {
-                    info = 'Нет информации об объекте';
-                }
-                console.log(feature);
-                document.getElementById("select_bar").style.display = "none";
-                document.getElementById("describe_bar").style.display = "block";
-                document.getElementById("bar").style.display = "block";
-                document.getElementById("describe").innerHTML = info;
-            });
+        function (feature) {
+            console.log('click event');
+            console.log(feature.get('info'));
+            info = feature.get('info');
+            if (feature.get('info') === undefined) {
+                info = 'Нет информации об объекте';
+            }
+            console.log(feature);
+            document.getElementById("select_bar").style.display = "none";
+            document.getElementById("describe_bar").style.display = "block";
+            document.getElementById("bar").style.display = "block";
+            document.getElementById("describe").innerHTML = info;
+        });
     });
 </script>
 
