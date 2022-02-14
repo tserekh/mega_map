@@ -9,7 +9,6 @@ def get_clusters(df, n_clusters, agg, mode):
     #     df["x"] = df["xy"].apply(lambda xy: xy[0])
     #     df["y"] = df["xy"].apply(lambda xy: xy[1])
     #     df = df.drop(["xy", "lat", "lon"], axis=1)
-
     xy = ["x", "y"]
 
     if n_clusters < len(df):
@@ -28,7 +27,6 @@ def get_clusters(df, n_clusters, agg, mode):
             # df_clusters = pd.merge(df_clusters, df_cluster_centers, on="cluster_label")
             # df_clusters.drop("cluster_label", axis=1, inplace=True)
         elif mode == "stupid":
-
             delta_x = df["x"].max() - df["x"].min()
             delta_y = df["y"].max() - df["y"].min()
             square_side = (delta_x * delta_y / n_clusters) ** 0.5
@@ -38,7 +36,6 @@ def get_clusters(df, n_clusters, agg, mode):
             df["y_round"] = df["y"].apply(
                 lambda x: square_side * round(x / square_side)
             )
-
             agg["source_name"] = "size"
             agg["x"] = "mean"
             agg["y"] = "mean"

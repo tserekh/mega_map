@@ -1,6 +1,4 @@
 function get_route_source(lines,  short_route_names, total_weight, info){
-    console.log(lines);
-
 		geojsonObject = {
 			"type": "FeatureCollection",
 			"features": [
@@ -17,8 +15,6 @@ function get_route_source(lines,  short_route_names, total_weight, info){
 					}
 				]
 			}
-console.log(geojsonObject)
-
 	features = (new ol.format.GeoJSON()).readFeatures(geojsonObject)
     return new ol.source.Vector({
         features: features
@@ -40,7 +36,6 @@ function get_route_layer(line_source){
     param_dic['address_to'] = address_to
     $.get(route_url, param_dic).then(
         function (response) {
-            console.log(response)
             shortest_path_coords = response['route']["shortest_path_coords"];
             short_route_names = response['route']["short_route_names"];
             total_weight = response['route']["total_weight"];

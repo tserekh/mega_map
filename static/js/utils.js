@@ -19,10 +19,10 @@ function nFormatter(num, digits) {
 }
 
 
-function compute_route_style() {
+function compute_route_style(color) {
     linestyle = new ol.style.Style({
         stroke: new ol.style.Stroke({
-            color: 'blue',
+            color: color,
             width: 3,
             opacity: 0.5,
         }),

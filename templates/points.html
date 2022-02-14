@@ -74,9 +74,6 @@
     });
 
     function balance(x, y) {
-        console.log('balance');
-        console.log(console.log(document.getElementById(x).checked));
-        console.log(console.log(document.getElementById(y).checked));
         if ((document.getElementById(x).checked === false) && (document.getElementById(y).checked === false)) {
             document.getElementById(x).checked = true;
             document.getElementById(y).checked = true;
@@ -122,8 +119,6 @@
     });
 
     function get_ground_stop_features(data) {
-        console.log(data);
-        console.log(data[0]);
         var features = [];
         for (var i = 0; i < data.length; ++i) {
             point = [data[i]["x"], data[i]["y"]];
@@ -139,7 +134,6 @@
 
             features.push(feature);
         }
-        console.log(features);
         return features
     }
 
@@ -304,23 +298,17 @@
 
     $('input').change(function () {
         param_dic = get_boarders();
-        console.log(param_dic);
         value = $(this).val();
-        console.log(value);
-        {#get_route();#}
         if (value === 'metros') {
             if (document.getElementById(value).checked) {
                 document.getElementById("metros").disabled = true;
                 $.get(metro_url, param_dic).then(function (response) {
-                    console.log("Success!");
                     var features = get_metro_features(response['metros']);
                     metro_layer = get_metro_layer(features);
                     map.addLayer(metro_layer);
                     document.getElementById("metros").disabled = false;
-                    console.log('input')
                 })
             } else {
-                console.log('remove');
                 map.removeLayer(metro_layer);
             }
         }
@@ -380,13 +368,10 @@
     map.on('click', function (evt) {
         var feature = map.forEachFeatureAtPixel(evt.pixel,
         function (feature) {
-            console.log('click event');
-            console.log(feature.get('info'));
             info = feature.get('info');
             if (feature.get('info') === undefined) {
                 info = 'Нет информации об объекте';
             }
-            console.log(feature);
             document.getElementById("select_bar").style.display = "none";
             document.getElementById("describe_bar").style.display = "block";
             document.getElementById("bar").style.display = "block";
@@ -394,5 +379,4 @@
         });
     });
 </script>
-
 </html>

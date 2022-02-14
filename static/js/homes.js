@@ -3,7 +3,6 @@ function get_homes() {
     if (document.getElementById("homes").checked) {
         document.getElementById("homes").disabled = true;
         $.get(home_url, param_dic).then(function (response) {
-                console.log("Success!");
             let features = get_home_features(response['homes']);
             let source = new ol.source.Vector({
                     features: features,
@@ -12,7 +11,6 @@ function get_homes() {
                 home_layer.setSource(source);
                 map.addLayer(home_layer);
                 document.getElementById("homes").disabled = false;
-                console.log('input');
             }
         )
     } else {
@@ -21,8 +19,6 @@ function get_homes() {
 }
 
 function get_home_features(data) {
-    console.log('inside get_home_features');
-    console.log(data);
     var features = new Array(data.length);
     for (var i = 0; i < data.length; ++i) {
         point = [data[i]["x"], data[i]["y"]];

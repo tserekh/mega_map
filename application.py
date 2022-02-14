@@ -3,7 +3,6 @@ import logging
 
 import pandas as pd
 from flask import render_template, request
-
 from PIL import Image
 from pyproj import Transformer
 from sqlalchemy import create_engine
@@ -36,8 +35,6 @@ def get_have_logos():
     for have_logo in have_logos:
         im = Image.open(have_logo)
         width, height = im.size
-        square = width * height
-
         have_logo = have_logo.split("/")[-1]
         have_logo = ".".join(have_logo.split(".")[:-1])
         dic[have_logo] = width
@@ -58,12 +55,13 @@ def create_coord_filter(request):
 @application.route("/get_metros", methods=["GET"])
 def get_metros():
     coord_filter = create_coord_filter(request)
-    df = pd.read_sql(f"select count(*) from  public.metros where {coord_filter}", con)
-    count = df.iloc[0, 0]
+    count = pd.read_sql(
+        f"select count(*) from  public.metros where {coord_filter}", con
+    ).iloc[0, 0]
     if count < 30:
-        df = pd.read_sql(f"select * from public.metros where {coord_filter}", con)
+        df_metro = pd.read_sql(f"select * from public.metros where {coord_filter}", con)
     else:
-        df = pd.read_sql(
+        df_metro = pd.read_sql(
             f"""
             select avg(x) as x, avg(y) as y, avg(lat) as lat, avg(lon) as lon, station_name, 'Нет информации' as info
             from public.metros
@@ -113,7 +111,6 @@ def get_homes():
 
 @application.route("/get_route", methods=["GET"])
 def get_route():
-    print(G.number_of_nodes())
     if request.args.get("lat_start") is None:
         address_from = request.args.get("address_from")
         address_to = request.args.get("address_to")
@@ -160,4 +157,4 @@ def get_route():
 
 
 if __name__ == "__main__":
-    application.run(host="0.0.0.0", port=5000, debug=(not config.prod))
+    application.run(host="0.0.0.0", port=5000, debug=True)

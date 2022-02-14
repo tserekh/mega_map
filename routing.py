@@ -1,14 +1,11 @@
-from functools import reduce
 from itertools import product
-from typing import Iterable, List, Tuple
+from typing import List, Tuple
 
 import networkx as nx
 import pandas as pd
 from networkx.classes.function import path_weight
 from pyproj import Transformer
 from sklearn.neighbors import KDTree
-
-import config
 
 
 def get_pairs(arr):
@@ -17,16 +14,19 @@ def get_pairs(arr):
 
 def get_graph_data(con):
 
-    return pd.read_sql("""select     stop_id,
+    return pd.read_sql(
+        """select     stop_id,
     using_trip_id,
     using_trip_id__next,
     stop_id__using_trip_id,
     stop_id__using_trip_id__next,
-    time from public.graph""", con)
+    time from public.graph""",
+        con,
+    )
 
 
 def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.DiGraph:
-    speed_met_in_min = 118.0/3
+    speed_met_in_min = 118.0 / 3
     df_route_graph = df[df["using_trip_id__next"] == df["using_trip_id"]]
     df_transfers_to_stop = df.groupby("stop_id").agg({"stop_id__using_trip_id": list})
     only_one_trip_stops = df_transfers_to_stop[
@@ -66,7 +66,6 @@ def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.D
         stop_stop_nodes["time"] = stop_stop_nodes["dist"] / speed_met_in_min
     G.add_weighted_edges_from(stop_stop_nodes[["stop_id", "stop_id_2", "time"]].values)
     G.add_weighted_edges_from(stop_stop_nodes[["stop_id_2", "stop_id", "time"]].values)
-
     return G
 
 
@@ -75,7 +74,7 @@ def get_potential_start_and_end(
     start_coords_xy: (float, float),
     end_coords_xy: (float, float),
 ) -> (pd.DataFrame, pd.DataFrame):
-    speed_met_in_min = 118/3
+    speed_met_in_min = 118 / 3
     tree = KDTree(df_stop[["x", "y"]], leaf_size=50)
     dists, inds = tree.query([start_coords_xy, end_coords_xy], k=50)
     df_start_stop = df_stop.iloc[inds[0]].copy()
@@ -87,15 +86,16 @@ def get_potential_start_and_end(
     df_start_stop["start_point"] = "start_point"
     df_end_stop["end_point"] = "end_point"
 
-    return df_start_stop[["start_point", "stop_id", "time"]], df_end_stop[["stop_id", "end_point", "time"]]
+    return (
+        df_start_stop[["start_point", "stop_id", "time"]],
+        df_end_stop[["stop_id", "end_point", "time"]],
+    )
 
 
 def get_stops_for_routing(con):
 
     return pd.read_sql(
-        f"""select * from public.bus_stops where
-    lat>={config.lat_min} and lat<={config.lat_max} and lon>={config.lon_min} and lon<={config.lon_max}
-                       """,
+        "select * from public.bus_stops",
         con,
     )
 
@@ -119,21 +119,21 @@ def get_route(
             trip_df = df_trip_id__short_name[
                 df_trip_id__short_name["trip_id"] == trip_id
             ]
-            print(trip_df)
             if len(trip_df) > 0:
                 short_name = trip_df["short_name"].iloc[0]
             else:
                 short_name = trip_id
             pretty_nodes.append(short_name)
         else:
-            stop_id = str(node)
+            stop_id = f"stop_{str(int(node))}"
             pretty_nodes.append(stop_id)
 
         stop_xy = list(
-            df_stop[df_stop["stop_id"] == int(float(stop_id))][["x", "y"]].iloc[0]
+            df_stop[df_stop["stop_id"] == int(float(stop_id.split("_")[-1]))][
+                ["x", "y"]
+            ].iloc[0]
         )
         xy_list.append(stop_xy)
-    print(pretty_nodes)
     return xy_list, pretty_nodes, weight
 
 
