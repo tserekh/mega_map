@@ -22,7 +22,7 @@ function nFormatter(num, digits) {
 function compute_route_style(color) {
     linestyle = new ol.style.Style({
         stroke: new ol.style.Stroke({
-            color: color,
+            color: "blue",
             width: 3,
             opacity: 0.5,
         }),

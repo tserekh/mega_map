@@ -1,6 +1,7 @@
 import os
 
 # SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'].replace("postgres://", "postgresql://")
+os.environ["DATABASE_URL"] = "postgres://postgres:postgres@db:5432/postgres"
 SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"].replace(
     "postgres://", "postgresql://"
 )

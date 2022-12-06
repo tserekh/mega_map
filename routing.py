@@ -100,6 +100,62 @@ def get_stops_for_routing(con):
     )
 
 
+def stop_by_id(df_stop: pd.DataFrame, stop_id: str) -> pd.Series:
+    if (stop_id == "start_point") or (stop_id == "end_point"):
+        return pd.Series({"x": None, "y": None, "stop_name": stop_id})
+    stop_id = int(float(stop_id))
+    return (
+        df_stop[df_stop["stop_id"].astype(int) == stop_id].iloc[0]
+    )
+
+
+def trip_id_to_short_name(trip_id: str, df_trip_id__short_name: pd.DataFrame):
+    return df_trip_id__short_name[df_trip_id__short_name["trip_id"] == trip_id].iloc[0]["short_name"]
+
+
+def format_sub_paths(nodes_list: List[List[str]], df_stop: pd.DataFrame) -> List[str]:
+    """
+    Получаем маршрут в человекочитаемом виде
+    """
+    formatted = []
+    for sub_path in nodes_list:
+        if '__' in str(sub_path[-1]):
+            route_name = str(sub_path[-1]).split("_")[-1]
+            formatted.append(f"Проехать {len(sub_path)-1} остановок на маршруте {route_name}")
+        elif str(sub_path[-1]) == 'end_point':
+            formatted.append(f"Дойти до конечной точки")
+        else:
+            stop_id = sub_path[-1]
+            stop_name = stop_by_id(df_stop, stop_id)["stop_name"]
+            formatted.append(f"Дойти до остановки {stop_name}")
+    return formatted
+
+
+def get_name_from_node(node: str, df_trip_id__short_name: pd.DataFrame, df_stop: pd.DataFrame):
+    if "__" in node:
+        # маршрут-остановка
+        stop_id, trip_id = node.split("__")
+        return trip_id_to_short_name(trip_id, df_trip_id__short_name)
+    elif node == "end_point":
+        return "end_point"
+    else:
+        # остановка
+        stop_id = node
+        return stop_by_id(df_stop, stop_id)["stop_name"]
+
+
+def get_xy_coord_from_node(node: str, df_stop: pd.DataFrame):
+    if "__" in node:
+        # маршрут-остановка
+        stop_id, trip_id = node.split("__")
+    elif (node == "start_point") or (node == "end_point"):
+        return [None, None]
+    else:
+        # остановка
+        stop_id = node
+    return list(stop_by_id(df_stop, stop_id)[["x", "y"]])
+
+
 def get_route(
     G: nx.classes.digraph.DiGraph,
     df_stop: pd.DataFrame,
@@ -108,33 +164,31 @@ def get_route(
     shortest_path_nodes = nx.shortest_path(
         G, "start_point", "end_point", weight="weight"
     )
+    print(shortest_path_nodes)
     weight = path_weight(G, shortest_path_nodes, weight="weight")
-
-    pretty_nodes = []
-    xy_list = []
-    for node in shortest_path_nodes[1:-1]:
-        if "__" in str(node):
-            trip_id = node.split("__")[-1]
-            stop_id = node.split("__")[0]
-            trip_df = df_trip_id__short_name[
-                df_trip_id__short_name["trip_id"] == trip_id
-            ]
-            if len(trip_df) > 0:
-                short_name = trip_df["short_name"].iloc[0]
-            else:
-                short_name = trip_id
-            pretty_nodes.append(short_name)
+    names_list = []
+    names = [shortest_path_nodes[0]]
+    xy_coords_list = []
+    xy_coords = [shortest_path_nodes[0]]
+    nodes_list = []
+    nodes = [shortest_path_nodes[0]]
+    in_bus = False
+    for node in shortest_path_nodes[1:]:
+        name = get_name_from_node(str(node), df_trip_id__short_name, df_stop)
+        xy_coord = get_xy_coord_from_node(str(node), df_stop)
+        if in_bus ^ ("__" in str(node)):
+            names_list.append(names)
+            xy_coords_list.append(xy_coords)
+            nodes_list.append(nodes)
+            names = [name]
+            xy_coords = [xy_coord]
+            nodes = [node]
+            in_bus = not in_bus
         else:
-            stop_id = f"stop_{str(int(node))}"
-            pretty_nodes.append(stop_id)
-
-        stop_xy = list(
-            df_stop[df_stop["stop_id"] == int(float(stop_id.split("_")[-1]))][
-                ["x", "y"]
-            ].iloc[0]
-        )
-        xy_list.append(stop_xy)
-    return xy_list, pretty_nodes, weight
+            names.append(name)
+            xy_coords.append(xy_coord)
+            nodes.append(node)
+    return xy_coords_list, format_sub_paths(nodes_list, df_stop), weight
 
 
 def get_trip_short(con) -> pd.DataFrame:

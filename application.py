@@ -70,7 +70,7 @@ def get_metros():
             """,
             con,
         )
-    result = list(df.T.to_dict().values())
+    result = list(df_metro.T.to_dict().values())
     return {"metros": result}
 
 
@@ -137,7 +137,8 @@ def get_route():
     start_coords_xy = transformer.transform(lat_start, lon_start)
     end_coords_xy = transformer.transform(lat_end, lon_end)
     short_route_names = list(map(lambda x: x.split("__")[-1], pretty_nodes[1:-1]))
-    shortest_path_coords = [start_coords_xy] + shortest_path_coords + [end_coords_xy]
+    shortest_path_coords = [[start_coords_xy]] + shortest_path_coords[1:] + [[end_coords_xy]]  # TODO: fix
+    # shortest_path_coords = list(filter(lambda x: len(x) != 1, shortest_path_coords))  # TODO: fix
     short_route_names = ["start_point"] + short_route_names + ["end_point"]
 
     vc = pd.Series(pretty_nodes).value_counts()

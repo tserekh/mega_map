@@ -138,12 +138,12 @@
     }
 
     function get_ground_stop_layer(features) {
-        var vectorSource = new ol.source.Vector({
+        let vectorSource = new ol.source.Vector({
             features: features,
             wrapX: false
         });
 
-        var vector = new ol.layer.Vector({
+        let vector = new ol.layer.Vector({
             source: vectorSource,
         });
         return vector
@@ -240,7 +240,7 @@
         return new ol.style.Style(style_dic);
     }
 
-    var center_coord = [37.622504, 55.753215];
+    let center_coord = [37.622504, 55.753215];
     center_coord = ol.proj.fromLonLat(center_coord);
 
     let map_layer = new ol.layer.Tile({
@@ -302,12 +302,12 @@
         if (value === 'metros') {
             if (document.getElementById(value).checked) {
                 document.getElementById("metros").disabled = true;
-                $.get(metro_url, param_dic).then(function (response) {
-                    var features = get_metro_features(response['metros']);
-                    metro_layer = get_metro_layer(features);
-                    map.addLayer(metro_layer);
-                    document.getElementById("metros").disabled = false;
-                })
+                    $.get(metro_url, param_dic).then(function (response) {
+                        var features = get_metro_features(response['metros']);
+                        metro_layer = get_metro_layer(features);
+                        map.addLayer(metro_layer);
+                        document.getElementById("metros").disabled = false;
+                    })
             } else {
                 map.removeLayer(metro_layer);
             }
