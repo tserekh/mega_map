@@ -1,8 +1,7 @@
-flask
+flask==1.1.4
 Flask-Migrate
 flask_migrate
-flask_script
-flask_sqlalchemy
+Flask-SQLAlchemy==2.5.1
 gunicorn
 networkx
 pandas
