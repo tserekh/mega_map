@@ -7,5 +7,5 @@ WORKDIR /code
 COPY . /code/
 RUN apt-get update
 RUN pip install -r requirements.txt
-RUN chmod -R 777 /
+RUN chmod -R 777 /code/
 ENTRYPOINT ["/code/entrypoint.sh"]
