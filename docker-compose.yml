@@ -19,6 +19,7 @@ services:
     env_file: .env
     user: root
     entrypoint:
+      - chmod -R 777 /code/
       - /code/entrypoint.sh
     volumes:
       - .:/code
