@@ -18,6 +18,8 @@ services:
 #    command: python manage.py
     env_file: .env
     user: root
+    entrypoint:
+      - /code/entrypoint.sh
     volumes:
       - .:/code
     ports:
