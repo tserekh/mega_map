@@ -14,8 +14,9 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=db
   web:
-    build: .
-    dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
 #    command: python manage.py
     env_file: .env
     user: root
