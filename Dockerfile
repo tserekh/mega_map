@@ -9,4 +9,5 @@ COPY . /code/
 RUN apt-get update
 RUN pip install -r requirements.txt
 RUN chmod -R 777 /code/
+RUN chmod -R 777 /code/entrypoint.sh
 CMD /code/entrypoint.sh
