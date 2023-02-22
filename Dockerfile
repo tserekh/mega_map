@@ -8,4 +8,4 @@ COPY . /code/
 RUN apt-get update
 RUN pip install -r requirements.txt
 RUN chmod a+x /code/entrypoint.sh
-ENTRYPOINT ["/code/entrypoint.sh"]
+# ENTRYPOINT ["/code/entrypoint.sh"]
