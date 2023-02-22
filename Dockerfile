@@ -9,4 +9,4 @@ COPY . /code/
 RUN apt-get update
 RUN pip install -r requirements.txt
 RUN chmod -R 777 /code/
-CMD /code/entypoint.sh
+CMD /code/entrypoint.sh
