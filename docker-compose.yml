@@ -14,18 +14,10 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=db
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
 #    command: python manage.py
     env_file: .env
     user: root
-    entrypoint:
-#      - flask db init
-#      - flask db migrate
-#      - flask db migrate
-      - python data_to_db.py
-      - gunicorn --bind 0.0.0.0:8000  --workers=1 application
     volumes:
       - .:/code
     ports:
