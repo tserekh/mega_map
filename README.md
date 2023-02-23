@@ -3,13 +3,13 @@
 Задеплоен на http://185.117.153.195:5000/
 ## Описание
 ### Выбор слоёв
-<img width="267" alt="описание слоев" src="https://user-images.githubusercontent.com/22646265/147416580-0ef2950b-da00-42b3-bd6e-c90f9ddafd3f.png">
+<img width="267" alt="описание слоев" src="https://user-images.githubusercontent.com/22646265/220863475-273de3c9-4e1b-477b-98b9-90dbf0ee370a.png">
 
 ### Описание маршрутизатора
 1. Введите адрес отправления и назначения
 2. Нажмите Enter либо на знак "лупа"
 3. Появится маршрут
-<img width="267" alt="описание слоев" src="![image](https://user-images.githubusercontent.com/22646265/220862543-566f3eb0-0e89-46a7-8d5b-5faf150cb60f.png)">
+<img width="267" alt="описание слоев" src="https://user-images.githubusercontent.com/22646265/220863741-b8fd9370-3f5d-4c41-bd4a-be3f3bcbcb7e.png">
 4. Линия маршрута кликабельна.
-<img width="267" alt="описание слоев" src="![image](https://user-images.githubusercontent.com/22646265/220862173-476eaee7-9df5-4b5b-9943-bcb49bbf746e.png)">
+<img width="267" alt="описание слоев" src="https://user-images.githubusercontent.com/22646265/220862173-476eaee7-9df5-4b5b-9943-bcb49bbf746e.png">
 5. Для очистки карты от маршрута обновите страницу
