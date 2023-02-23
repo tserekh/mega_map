@@ -60,7 +60,7 @@ def build_graph(df: pd.DataFrame, df_stop: pd.DataFrame) -> nx.classes.digraph.D
         df_stop["stop_id_2"] = df_stop.iloc[inds[:, j]]["stop_id"].values
         df_stop["dist"] = dists[:, j]
 
-        stop_stop_nodes = stop_stop_nodes.concat(
+        stop_stop_nodes = stop_stop_nodes.append(
             df_stop[["stop_id", "stop_id_2", "dist"]]
         )
         stop_stop_nodes["time"] = stop_stop_nodes["dist"] / speed_met_in_min
