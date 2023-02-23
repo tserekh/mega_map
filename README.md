@@ -1,7 +1,6 @@
 # Mega map - маршрутизатор наземного транспорта
 Маршрутизатор наземного траспорта г. Москвы на основе отрытых данных  - данных о расписании маршрутов.
 Задеплоен на http://185.117.153.195:5000/
-
 ## Описание
 ### Выбор слоёв
 <img width="267" alt="описание слоев" src="https://user-images.githubusercontent.com/22646265/147416580-0ef2950b-da00-42b3-bd6e-c90f9ddafd3f.png">
@@ -10,7 +9,7 @@
 1. Введите адрес отправления и назначения
 2. Нажмите Enter либо на знак "лупа"
 3. Появится маршрут
-<img width="267" alt="описание слоев" src="https://user-images.githubusercontent.com/22646265/147416723-b6396936-1e45-4f5f-b8b9-e03652a4d3a2.png">
+<img width="267" alt="описание слоев" src="![image](https://user-images.githubusercontent.com/22646265/220862543-566f3eb0-0e89-46a7-8d5b-5faf150cb60f.png)">
 4. Линия маршрута кликабельна.
-<img width="267" alt="описание слоев" src="https://user-images.githubusercontent.com/22646265/148187229-2b40e245-0cb5-40c0-a6c8-e906c50691e0.png">
+<img width="267" alt="описание слоев" src="![image](https://user-images.githubusercontent.com/22646265/220862173-476eaee7-9df5-4b5b-9943-bcb49bbf746e.png)">
 5. Для очистки карты от маршрута обновите страницу
