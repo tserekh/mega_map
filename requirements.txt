@@ -10,4 +10,4 @@ pyproj
 python-dotenv
 requests
 scikit-learn
-sqlalchemy==1.4
+sqlalchemy==1.4.16
