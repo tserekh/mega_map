@@ -144,7 +144,7 @@ def get_route():
     vc = pd.Series(pretty_nodes).value_counts()
     html_info = pd.DataFrame(
         vc.loc[list(pd.Series(pretty_nodes).drop_duplicates().values)]
-    ).to_html()
+    ).drop(0, axis=1).to_html()
     return {
         "route": {
             "shortest_path_coords": shortest_path_coords,
