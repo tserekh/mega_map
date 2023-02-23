@@ -165,7 +165,7 @@ def get_route(
         G, "start_point", "end_point", weight="weight"
     )
     print(shortest_path_nodes)
-    weight = path_weight(G, shortest_path_nodes, weight="time")
+    weight = path_weight(G, shortest_path_nodes, weight="weight")
     names_list = []
     names = [shortest_path_nodes[0]]
     xy_coords_list = []
