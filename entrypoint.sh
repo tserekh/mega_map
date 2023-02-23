@@ -4,4 +4,4 @@ flask db migrate
 flask db upgrade
 python data_to_db.py
 #gunicorn --bind 0.0.0.0:"$PORT"  --workers=1 application
-gunicorn --bind 0.0.0.0:8000  --workers=1 application
+gunicorn --bind 0.0.0.0:5000  --workers=1 application
