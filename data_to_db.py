@@ -27,4 +27,5 @@ df = pd.read_csv("external_data/trip_short.csv", sep=";")
 # df = df[~df["short_name"].apply(lambda x: x.startswith("Н"))]
 con.execute("delete from public.trip_short")
 df.to_sql("trip_short", con, "public", if_exists="append", index=False)
+con.dispose()
 

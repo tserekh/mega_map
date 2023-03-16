@@ -8,7 +8,6 @@ from config import SQLALCHEMY_DATABASE_URI
 application = Flask(__name__)
 application.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
 
 db = SQLAlchemy(application)
 migrate = Migrate(application, db)

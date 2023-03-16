@@ -20,6 +20,7 @@ df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
 df_trip_id__short_name = get_trip_short(con)
 G = build_graph(df, df_stops_for_routing)
+con.dispose()
 
 logging.info("All ok with global variables")
 
@@ -54,6 +55,7 @@ def create_coord_filter(request):
 
 @application.route("/get_metros", methods=["GET"])
 def get_metros():
+    con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
     coord_filter = create_coord_filter(request)
     count = pd.read_sql(
         f"select count(*) from  public.metros where {coord_filter}", con
@@ -70,6 +72,7 @@ def get_metros():
             """,
             con,
         )
+    con.dispose()
     result = list(df_metro.T.to_dict().values())
     return {"metros": result}
 
@@ -77,9 +80,11 @@ def get_metros():
 @application.route("/get_ground_stops", methods=["GET"])
 def get_ground_stops():
     n_clusters = 200
+    con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
     agg = {"source_name": "size"}
     coord_filter = create_coord_filter(request)
     df = pd.read_sql(f"select * from public.bus_stops where {coord_filter}", con)
+    con.dispose()
     if len(df):
         df_clusters = get_clusters(df, n_clusters, agg, "stupid")
         df_clusters.rename(columns={"source_name": "n_ground_stops"}, inplace=True)
@@ -101,7 +106,9 @@ def get_orgs():
 @application.route("/get_homes", methods=["GET"])
 def get_homes():
     coord_filter = create_coord_filter(request)
+    con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
     df_houses = pd.read_sql(f"select * from houses where {coord_filter}", con)
+    con.dispose()
     n_clusters = 100
     agg = {"flat_num": "sum"}
     df_clusters = get_clusters(df_houses, n_clusters, agg, "stupid")
