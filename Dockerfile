@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 5000 5001 8000
 WORKDIR /code
 COPY . /code/
-RUN apt-get update
+#RUN apt-get update
 RUN pip install -r requirements.txt
 RUN chmod -R 777 /code/
 CMD sh /code/entrypoint.sh
