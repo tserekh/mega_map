@@ -151,7 +151,7 @@ function get_metro_layer(features) {
         });
         return vector
     }
-}
+
 
     function compute_new_point_style(feature) {
         var fill_color = 'cyan';
