@@ -225,7 +225,7 @@ function get_metro_layer(features) {
         return new ol.style.Style(style_dic);
     }
 
-    have_logos = {{have_logos}};
+    have_logos = "{{ url_for('have_logos') }}"
     metro_url = "{{ url_for('get_metros') }}"
     ground_stop_url = "{{ url_for('get_ground_stops') }}"
     home_url = "{{ url_for('get_homes') }}"
