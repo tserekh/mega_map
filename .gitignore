@@ -129,6 +129,22 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Other caches
+.ruff_cache/
+.pytype/
+cython_debug/
+.eslintcache
+.parcel-cache/
+.sass-cache/
+.npm/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Node
 node_modules/
 package-lock.json
+
+# Aider: логи, история чата, кеш карты репозитория и прочие служебные файлы
 .aider*
