@@ -14,7 +14,10 @@ from routing import (build_graph, get_graph_data, get_pretty_route,
                      get_stops_for_routing, get_trip_short)
 from utils import get_clusters
 
+from app import db
+
 con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
+db.create_all()  # Создаем все таблицы в базе данных
 logging.info("Start initializing graph")
 df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
