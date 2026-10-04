@@ -5,6 +5,13 @@ from sqlalchemy import create_engine
 
 from config import SQLALCHEMY_DATABASE_URI
 
+from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+
+from config import SQLALCHEMY_DATABASE_URI
+
 application = Flask(__name__)
 application.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///local.db"  # Используем SQLite для локальной разработки
 application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
