@@ -1,31 +1,35 @@
+import os
+
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
-from config import SQLALCHEMY_DATABASE_URI
+from app import application, db
 
-con = create_engine(SQLALCHEMY_DATABASE_URI)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "external_data")
 
-df = pd.read_csv("external_data/houses.csv", sep=";")
-con.execute("delete from public.houses")
-df.to_sql("houses", con, "public", if_exists="append", index=False)
+# (таблица, csv-файл, разделитель)
+TABLES = [
+    ("houses", "houses.csv", ";"),
+    ("metros", "metros.csv", ";"),
+    ("bus_stops", "bus_stops.csv", "\t"),
+    ("graph", "graph.csv", ";"),
+    ("trip_short", "trip_short.csv", ";"),
+]
 
+con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
+# Создаём таблицы, если их ещё нет
+db.metadata.create_all(con)
 
-df = pd.read_csv("external_data/metros.csv", sep=";")
-con.execute("delete from public.metros")
-df.to_sql("metros", con, "public", if_exists="append", index=False)
+for table, filename, sep in TABLES:
+    path = os.path.join(DATA_DIR, filename)
+    print(f"Загрузка {path} -> {table}")
+    df = pd.read_csv(path, sep=sep)
+    # df = df[~df["short_name"].apply(lambda x: x.startswith("Н"))]  # для trip_short
+    # Очистка и загрузка в одной транзакции: при ошибке старые данные останутся
+    with con.begin() as conn:
+        conn.execute(text(f"delete from {table}"))
+        df.to_sql(table, conn, if_exists="append", index=False, chunksize=10000)
+    print(f"Готово: {len(df)} строк")
 
-df = pd.read_csv("external_data/bus_stops.csv", sep="\t")
-con.execute("delete from public.bus_stops")
-df.to_sql("bus_stops", con, "public", if_exists="append", index=False)
-
-df = pd.read_csv("external_data/graph.csv", sep=";")
-con.execute("delete from public.graph")
-df.to_sql("graph", con, "public", if_exists="append", index=False)
-
-
-df = pd.read_csv("external_data/trip_short.csv", sep=";")
-# df = df[~df["short_name"].apply(lambda x: x.startswith("Н"))]
-con.execute("delete from public.trip_short")
-df.to_sql("trip_short", con, "public", if_exists="append", index=False)
 con.dispose()
-

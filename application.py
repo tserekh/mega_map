@@ -1,5 +1,6 @@
 import glob
 import logging
+import os
 
 import pandas as pd
 from flask import render_template, request
@@ -7,14 +8,16 @@ from PIL import Image
 from pyproj import Transformer
 from sqlalchemy import create_engine
 
-import config
-from app import application
+from app import application, db
 from geocode import geocode
 from routing import (build_graph, get_graph_data, get_pretty_route,
                      get_stops_for_routing, get_trip_short)
 from utils import get_clusters
 
+logging.basicConfig(level=logging.INFO)
+
 con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
+db.create_all()  # Создаем все таблицы в базе данных
 logging.info("Start initializing graph")
 df_stops_for_routing = get_stops_for_routing(con)
 df = get_graph_data(con)
@@ -31,14 +34,16 @@ def show_map():
 
 
 def get_have_logos():
-    have_logos = glob.glob("../static/map_icons/*")
+    logos_dir = os.path.join(application.root_path, "static", "map_icons")
     dic = {}
-    for have_logo in have_logos:
-        im = Image.open(have_logo)
-        width, height = im.size
-        have_logo = have_logo.split("/")[-1]
-        have_logo = ".".join(have_logo.split(".")[:-1])
-        dic[have_logo] = width
+    for have_logo in glob.glob(os.path.join(logos_dir, "*")):
+        try:
+            with Image.open(have_logo) as im:
+                width, height = im.size
+        except OSError:
+            continue
+        name = os.path.splitext(os.path.basename(have_logo))[0]
+        dic[name] = width
     return dic
 
 
@@ -58,15 +63,15 @@ def get_metros():
     con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
     coord_filter = create_coord_filter(request)
     count = pd.read_sql(
-        f"select count(*) from  public.metros where {coord_filter}", con
+        f"select count(*) from metros where {coord_filter}", con
     ).iloc[0, 0]
     if count < 30:
-        df_metro = pd.read_sql(f"select * from public.metros where {coord_filter}", con)
+        df_metro = pd.read_sql(f"select * from metros where {coord_filter}", con)
     else:
         df_metro = pd.read_sql(
             f"""
             select avg(x) as x, avg(y) as y, avg(lat) as lat, avg(lon) as lon, station_name, 'Нет информации' as info
-            from public.metros
+            from metros
             where {coord_filter}
             group by station_name
             """,
@@ -83,7 +88,7 @@ def get_ground_stops():
     con = create_engine(application.config["SQLALCHEMY_DATABASE_URI"])
     agg = {"source_name": "size"}
     coord_filter = create_coord_filter(request)
-    df = pd.read_sql(f"select * from public.bus_stops where {coord_filter}", con)
+    df = pd.read_sql(f"select * from bus_stops where {coord_filter}", con)
     con.dispose()
     if len(df):
         df_clusters = get_clusters(df, n_clusters, agg, "stupid")
@@ -121,8 +126,12 @@ def get_route():
     if request.args.get("lat_start") is None:
         address_from = request.args.get("address_from")
         address_to = request.args.get("address_to")
-        lat_start, lon_start = geocode(address_from)
-        lat_end, lon_end = geocode(address_to)
+        coords_from = geocode(address_from) if address_from else None
+        coords_to = geocode(address_to) if address_to else None
+        if coords_from is None or coords_to is None:
+            return {"error": "Не удалось определить координаты адреса"}, 400
+        lat_start, lon_start = coords_from
+        lat_end, lon_end = coords_to
     else:
         lat_start = float(request.args.get("lat_start"))
         lon_start = float(request.args.get("lon_start"))
@@ -165,4 +174,6 @@ def get_route():
 
 
 if __name__ == "__main__":
-    application.run(host="0.0.0.0", port=5000, debug=True)
+    # Flask — WSGI-приложение, поэтому запускаем встроенным сервером.
+    # Перезагрузчик отключён, чтобы граф не строился дважды.
+    application.run(host="0.0.0.0", port=8000, use_reloader=False)
